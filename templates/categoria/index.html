@@ -1,0 +1,182 @@
+{% extends 'index.html' %}
+
+{% block title %}
+    Dashboard
+{% endblock %}
+
+{% block content %}
+
+<main class="altum-animate altum-animate-fill-none altum-animate-fade-in">
+
+    <div class="container" >
+        <div id="notification"></div>
+        <div class="row mb-4">
+            <div class="col-12 col-lg mb-3 mb-lg-0">
+                <h1 class="h4 m-0">Categorias</h1>
+            </div>
+
+            <div class="col-12 col-lg-auto d-flex">
+                <div>
+                    <div class="dropdown">
+                        <button type="button" data-toggle="modal" data-target="#create_biolink" data-boundary="viewport"
+                        class="btn btn-primary dropdown-toggle dropdown-toggle-simple">
+
+                            <i class="fa fa-plus-circle"></i>
+                            Crear
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="custom-row mb-4 ">
+               
+        <table id="tabla" class="table table-striped tabla">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th style="text-align: right;">Fecha</th>
+                    <th style="text-align: right;">Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for categoria in categorias %}
+                    <tr>
+                        <td>{{ categoria.name }}</td>
+                        <td style="text-align: right;">{{ categoria.updated_at }}</td>
+                        <td style="text-align: right;"><div class="dropdown">
+                            <button type="button" class="btn btn-link text-secondary dropdown-toggle dropdown-toggle-simple"
+                                    data-toggle="dropdown" data-boundary="viewport">
+                                <i class="fa fa-fw fa-ellipsis-v"></i>
+                            </button>
+
+                            <div class="dropdown-menu dropdown-menu-right">
+
+                                <button data-toggle="modal" onclick="editar(`{% url 'actualizar_categoria' categoria.id %}`, '{{categoria.name}}')" data-target="#editar_categoria" class="dropdown-item">
+                                    <i class="fa fa-fw fa-sm fa-pencil-alt mr-2"></i>
+                                    Edit</button>
+
+                                <button data-target="Seguro que desea eliminar la categoria?, recuerde que puede estar siendo usado en algún menú." class="dropdown-item eliminar"
+                                   data-link="{% url 'delete_categoria' categoria.id %}">
+                                    <i class="fa fa-trash-alt fa-w-14 fa-fw fa-sm mr-2"></i>
+                                    Delete</button>
+                            </div>
+                        </div></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Nombre</th>
+                    <th style="text-align: right;">Fecha</th>
+                    <th style="text-align: right;">Opciones</th>
+                </tr>
+            </tfoot>
+        </table>
+        
+            </div>
+        
+
+    </div>
+
+
+</main>
+
+
+<div class="modal fade" id="create_biolink" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Crear Categoria</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form name="crear_categoria" method="post" action="{% url 'categoria_store' %}" role="form" >
+                    {% csrf_token %}
+                    <input type="hidden" name="request_type" value="create">
+                    <input type="hidden" name="type" value="biolink">
+
+                    <div class="notification-container"></div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i>
+                            Nombre</label>
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" name="nombre" maxlength="256"
+                                   onchange="update_this_value(this, get_slug)"
+                                   onkeyup="update_this_value(this, get_slug)" placeholder="Complete el campo">
+                        </div>
+                        <small class="form-text text-muted"></small>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <button type="submit" name="submit" class="btn btn-block btn-primary">Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editar_categoria" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Categoria</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form name="editar_categoria" method="post" action="" role="form" >
+                    {% csrf_token %}
+                    <input type="hidden" name="request_type" value="create">
+                    <input type="hidden" name="type" value="biolink">
+
+                    <div class="notification-container"></div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i>
+                            Nombre</label>
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" name="nombre" maxlength="256"
+                                   onchange="update_this_value(this, get_slug)" id="edit_nombre" value=""
+                                   onkeyup="update_this_value(this, get_slug)" placeholder="Complete el campo">
+                        </div>
+                        <small class="form-text text-muted"></small>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <button type="submit" name="submit" class="btn btn-block btn-primary">Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+
+    function editar(url, name){
+        document.getElementById('edit_nombre').value = name
+        document.forms['editar_categoria'].action = url;
+    }
+
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,455 @@
+{% extends 'index.html' %}
+
+{% block title %}
+    Dashboard
+{% endblock %}
+
+{% block content %}
+
+<main class="altum-animate altum-animate-fill-none altum-animate-fade-in">
+
+    <div class="container" >
+        <div id="notification"></div>
+        <div class="mb-2">
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-4 mb-3">
+                    <div class="card h-100 position-relative">
+                        <div class="card-body d-flex">
+                            <div>
+                                <div class="card border-0 bg-primary-100 mr-3 position-static">
+                                    <div class="p-3 d-flex align-items-center justify-content-between">
+                                        <a href="https://micartafacil.com/links?type=link"
+                                           class="stretched-link text-primary-600">
+                                            <i class="fa fa-fw fa-link fa-lg"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="card-title h4 m-0">{{ restaurantes.count }}</div>
+                                <span class="text-muted">Total de Clientes</span>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-4 mb-3">
+                    <div class="card h-100 position-relative">
+                        <div class="card-body d-flex">
+                            <div>
+                                <div class="card border-0 bg-primary-100 mr-3 position-static">
+                                    <div class="p-3 d-flex align-items-center justify-content-between">
+                                        <i class="fa fa-chart-bar fa-w-16 fa-fw fa-lg text-primary-600"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="card-title h4 m-0">{{ activos_restaurantes.count }}</div>
+                                <span class="text-muted">Clientes Activos</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-4 mb-3">
+                    <div class="card h-100 position-relative">
+                        <div class="card-body d-flex">
+                            <div>
+                                <div class="card border-0 bg-primary-100 mr-3 position-static">
+                                    <div class="p-3 d-flex align-items-center justify-content-between">
+                                        <i class="fa fa-chart-bar fa-w-16 fa-fw fa-lg text-primary-600"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="card-title h4 m-0">{{ inactivos_restaurantes.count }}</div>
+                                <span class="text-muted">Menús Inactivos</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="row mb-4">
+            <div class="col-12 col-lg mb-3 mb-lg-0">
+                <h1 class="h4 m-0">MENÚS</h1>
+            </div>
+
+            <div class="col-12 col-lg-auto d-flex">
+                <div>
+                    <div class="dropdown">
+                        <button type="button" data-toggle="dropdown" data-boundary="viewport"
+                                class="btn btn-primary dropdown-toggle dropdown-toggle-simple">
+                                <i class="fa fa-plus-circle"></i>
+                            Crear
+                        </button>
+
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a href="#" class="dropdown-item" data-toggle="modal" data-target="#create_biolink">
+                                <i class="fa fa-circle fa-w-16 fa-fw fa-sm mr-1 " style="color: green"></i>
+
+                                Crear Restaurante </a>
+
+                            <a href="#" class="dropdown-item" data-toggle="modal" data-target="#create_link">
+                                <i class="fa fa-circle fa-w-16 fa-fw fa-sm mr-1" style="color: cyan"></i>
+                                Crear Menú </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {% for restaurante in restaurantes %}
+            <div class="custom-row mb-4 ">
+                <div class="row">
+                    <div class="col-8 col-lg-5">
+                        <div class="d-flex align-items-center">
+                            <div class="mr-3 d-flex align-items-center">
+                                        <span class="fa-stack fa-1x" data-toggle="tooltip" title="">
+                                            
+                                            {% if restaurante.favicon == "" %}
+                                                <img src="../static/assets/images/right-arrow-7.ico" style="height: 30px; width: 30px" >
+                                            {% else %}
+                                                <img src="../{{ restaurante.favicon }} " style="height: 30px; width: 30px" >
+                                            {% endif %}
+                                                
+                                        </span>
+                            </div>
+
+                            <div class="d-flex flex-column min-width-0">
+                                <div class="d-inline-block text-truncate">
+                                    <a href="{% url 'view_restaurant' restaurante.id %}" class="font-weight-bold">{{ restaurante.name }}</a>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                            <span class="d-inline-block text-truncate">
+                                                                                <img src="../static/assets/images/right-arrow-7.ico"
+                                                                                     class="img-fluid icon-favicon mr-1">
+                                                <a href="{{ restaurante.name_url }}" class="text-muted align-middle"
+                                                   target="_blank" rel="noreferrer">/{{ restaurante.name_url }}</a>
+                                                                            </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col col-lg-3 d-none d-lg-flex flex-lg-row justify-content-lg-between align-items-center">
+                        <div>
+                            
+                        </div>
+                            
+                        <div>
+                            <a>
+                                        <span data-toggle="tooltip" title="" data-original-title="Total pageviews"><span
+                                                class="badge badge-light">
+                                            <i class="fa fa-chart-bar fa-w-16 fa-fw fa-sm mr-1"></i>    Menú items: 
+                                            
+                                            {% for x, y in contador.items %}
+                                                
+                                                {% if x == restaurante.id %}
+                                                    {{y}}
+                                                {% endif %} 
+                                                    
+                                            {% endfor %}
+                                                
+                                            </span></span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col col-lg-2 d-none d-lg-flex justify-content-lg-end align-items-center">
+                        <small class="text-muted" data-toggle="tooltip" title="" data-original-title="{{ restaurante.updated_at }}">
+                            <i class="fa fa-fw fa-calendar fa-sm mr-1"></i>
+                            <span class="align-middle">{{ restaurante.updated_at }}</span></small>
+                    </div>
+
+                    <div class="col-4 col-lg-2 d-flex justify-content-center justify-content-lg-end align-items-center">
+                        {% if restaurante.status == True %}
+                            <div class="custom-control custom-switch" data-toggle="tooltip" title=""
+                                 data-original-title="Change status">
+                                <input type="checkbox" class="custom-control-input" id="{{ restaurante.id }}" data-row-id="{{ restaurante.id }}"
+                                       onchange="ajax_call_helper(event, '/{{ restaurante.id }}/change/', 'GET')" checked="">
+                                <label class="custom-control-label clickable" for="{{ restaurante.id }}"></label>
+                            </div>
+                        {% else %}
+                            <div class="custom-control custom-switch" data-toggle="tooltip" title=""
+                                 data-original-title="Change status">
+                                <input type="checkbox" class="custom-control-input" id="{{ restaurante.id }}" data-row-id="{{ restaurante.id }}"
+                                       onchange="ajax_call_helper(event, '/{{ restaurante.id }}/change/', 'GET')">
+                                <label class="custom-control-label clickable" for="{{ restaurante.id }}"></label>
+                            </div>
+                        {% endif %}
+
+
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-link text-secondary dropdown-toggle dropdown-toggle-simple"
+                                    data-toggle="dropdown" data-boundary="viewport">
+                                <i class="fa fa-fw fa-ellipsis-v"></i>
+                            </button>
+
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a href="{% url 'view_restaurant' restaurante.id %}" class="dropdown-item">
+                                    <i class="fa fa-fw fa-sm fa-eye mr-2"></i>
+                                    View</a>
+
+                                <a href="{% url 'editar_restaurant' restaurante.id %}" class="dropdown-item">
+                                    <i class="fa fa-fw fa-sm fa-pencil-alt mr-2"></i>
+                                    Edit</a>
+
+                                <a href=""
+                                   class="dropdown-item">
+
+                                    <i class="fa fa-fw fa-sm fa-qrcode mr-2"></i> QR
+                                    Code</a>
+
+                                <a href="{% url 'banners' restaurante.id %}"
+                                   class="dropdown-item">
+
+                                    <i class="fa fa-fw fa-sm fa-camera-retro mr-2"></i>
+                                    Banners</a>
+
+                                <button data-target="Seguro que desea eliminar el restaurante?" class="dropdown-item eliminar"
+                                   data-link="{% url 'delete_restaurant' restaurante.id %}">
+                                    <i class="fa fa-trash-alt fa-w-14 fa-fw fa-sm mr-2"></i>
+                                    Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
+
+
+</main>
+
+<div class="modal fade" id="link_delete" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fa fa-fw fa-sm fa-trash-alt text-muted mr-2"></i>
+                    Delete link
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form name="link_delete" method="post" role="form">
+                    {% csrf_token %}
+                    <input type="hidden" name="request_type" value="delete">
+                    <input type="hidden" name="link_id" value="">
+
+                    <div id="notification-container"></div>
+
+                    <p class="text-muted">Todos los datos relacionados a este negocio serán borrados.</p>
+
+                    <div class="mt-4">
+                        <button type="submit" name="submit" class="btn btn-lg btn-block btn-danger">Delete</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+{% include 'includes/crear_menu.html' %}
+<div class="modal fade " id="create_biolink" tabindex="-1" role="dialog" aria-hidden="true" >
+    <div class="modal-dialog modal-dialog-centered" role="document" >
+        <div class="modal-content" >
+
+            <div class="modal-header">
+                <h5 class="modal-title">Crear Restaurante</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form name="crear_restaurante" method="post" action="/crear_restaurant/" role="form" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="request_type" value="create">
+                    <input type="hidden" name="type" value="biolink">
+
+                    <div class="notification-container"></div>
+                <div class="row">
+                    <div class="form-group col-6">
+                        <label>
+                            <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i>
+                            Nombre</label>
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" name="nombre" maxlength="256"
+                                    placeholder="Complete el campo">
+                        </div>
+                        <small class="form-text text-muted"></small>
+                    </div>
+
+                    <div class="form-group col-6">
+                        <label>
+                            <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i>
+                            Dirección </label>
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" name="direccion" maxlength="256"
+                                    placeholder="Complete el campo">
+                        </div>
+                        <small class="form-text text-muted"></small>
+                    </div>
+                </div>
+                    <div class="mb-3">
+                        <label>
+                            <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i>Icono </label>
+                        <div class="custom-file">
+                            
+                            <input type="file" class="custom-file-input" id="customFileLangHTML" name="icono" onchange="cambia(this)">
+                            <label class="custom-file-label" for="customFileLangHTML" data-browse="Explorar" id="licono">Seleccionar Icono</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>
+                            <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i>Logo </label>
+                        <div class="custom-file">
+                            
+                            <input type="file" class="custom-file-input" id="logo" name="logo" onchange="cambia(this)">
+                            <label class="custom-file-label" for="customFileLangHTML" data-browse="Explorar" id="llogo" >Seleccionar Logo</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i>Teléfono </label>
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" name="telefono" maxlength="256"
+                                    placeholder="Complete el campo">
+                        </div>
+                        <small class="form-text text-muted"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fab fa-fw fa-whatsapp fa-sm text-muted mr-1"></i>
+                            WhatsApp </label>
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" name="whatsapp" maxlength="256"
+                                    placeholder="Complete el campo">
+                        </div>
+                        <small class="form-text text-muted"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fa fa-fw fa-address-card fa-sm text-muted mr-1"></i>
+                            Correo </label>
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" name="correo" maxlength="256"
+                                    placeholder="Complete el campo">
+                        </div>
+                        <small class="form-text text-muted"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fa fa-fw fa-clock fa-sm text-muted mr-1"></i>
+                            Tiempo </label>
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" name="tiempo" maxlength="256"
+                                    placeholder="Complete el campo">
+                        </div>
+                        <small class="form-text text-muted"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fab fa-fw fa-facebook fa-sm text-muted mr-1"></i>
+                            Facebook </label>
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" name="facebook" maxlength="256"
+                                    placeholder="Complete el campo">
+                        </div>
+                        <small class="form-text text-muted"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fab fa-fw fa-twitter fa-sm text-muted mr-1"></i>
+                            Twitter </label>
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" name="twitter" maxlength="256"
+                                    placeholder="Complete el campo">
+                        </div>
+                        <small class="form-text text-muted"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fab fa-fw fa-instagram fa-sm text-muted mr-1"></i>
+                            Instagram </label>
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" name="instagram" maxlength="256"
+                                    placeholder="Complete el campo">
+                        </div>
+                        <small class="form-text text-muted"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i>YouTube </label>
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" name="youtube" maxlength="256"
+                                    placeholder="Complete el campo">
+                        </div>
+                        <small class="form-text text-muted"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i>URL del Nombre </label>
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" name="url" maxlength="256"
+                                    placeholder="Complete el campo">
+                        </div>
+                        <small class="form-text text-muted"></small>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <button type="submit" name="submit" class="btn btn-block btn-primary">Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function cambia (esa) {
+        document.getElementById('l'+esa.name).innerHTML = esa.value.split('\\')[2]
+    }
+</script>
+{% endblock %}

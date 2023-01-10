@@ -1,0 +1,222 @@
+{% extends 'index.html' %}
+
+{% block title %}
+    Actualizar
+{% endblock %}
+
+{% block content %}
+<main class="altum-animate altum-animate-fill-none altum-animate-fade-in">
+
+    <div class="container">
+
+        <div class="row mb-4">
+            <div class="col-12 col-lg mb-3 mb-lg-0">
+                <h1 class="h4 m-0">Editar <i>{{ restaurant.name }}</i> </h1>
+            </div>
+            <form name="crear_restaurante" method="post" action="{% url 'actualizar_restaurant' restaurant.id %}" role="form" enctype="multipart/form-data">
+                {% csrf_token %}
+            <div class="col-12 col-lg-auto d-flex">
+                <div>
+                    <div class="dropdown">
+                        <button type="submit" data-toggle="modal" data-target="#create_link" data-boundary="viewport"
+                                class="btn btn-primary dropdown-toggle dropdown-toggle-simple">
+  
+                            <i class="fa fa-pencil-alt fa-sm mr-1 text-muted-alt mr-1"></i>
+                            Actualizar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="card">
+            <div class="card-body">
+              <blockquote class="blockquote mb-0">
+                
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label>
+                        <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i>
+                        Nombre</label>
+                    <div class="input-group">
+
+                        <input type="text" class="form-control" name="nombre" maxlength="256"
+                               onchange="" value="{{ restaurant.name }}"
+                               onkeyup="" placeholder="Complete el campo">
+                    </div>
+                    <small class="form-text text-muted"></small>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label>
+
+                        <i class="fa fa-pencil-alt fa-sm mr-1 text-muted"></i>
+                        <!-- <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i> Font Awesome fontawesome.com -->
+                        URL del Nombre </label>
+                    <div class="input-group">
+
+                        <input type="text" class="form-control" name="url" maxlength="256"
+                               onchange="" value="{{ restaurant.name_url }}"
+                               onkeyup="" placeholder="Complete el campo">
+                    </div>
+                    <small class="form-text text-muted"></small>
+                </div>
+                <div class="form-group col-md-12">
+                    <label>
+                        <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i>
+                        Dirección </label>
+                    <div class="input-group">
+
+                        <input type="text" class="form-control" name="direccion" maxlength="256"
+                               onchange="" value="{{ restaurant.address }}"
+                               onkeyup="" placeholder="Complete el campo">
+                    </div>
+                    <small class="form-text text-muted"></small>
+                </div>
+
+                <div class="mb-3 col-md-6">
+                    <label>
+                        <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i> Icono </label>
+                    <div class="custom-file">
+                        
+                        <input type="file" class="custom-file-input" id="customFileLangHTML" name="icono" onchange="cambia(this)">
+                        <label class="custom-file-label" for="customFileLangHTML" data-browse="Explorar" id="licono">{{ restaurant.favicon }}</label>
+                    </div>
+                    <small class="form-text text-muted">Imagen anterior: <a href="../{{ restaurant.favicon }}">{{ restaurant.favicon }}</a></small>
+                </div>
+
+                <div class="mb-3 col-md-6">
+                    <label>
+                         <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i> 
+                        
+                        Logo </label>
+                    <div class="custom-file">
+                        
+                        <input type="file" class="custom-file-input" id="logo" name="logo" onchange="cambia(this)">
+                        <label class="custom-file-label" for="customFileLangHTML" data-browse="Explorar" id="llogo" >{{ restaurant.logo }}</label>
+                    </div>
+                    <small class="form-text text-muted">Imagen anterior: <a href="../{{ restaurant.logo }}">{{ restaurant.logo }}</a></small>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label>
+                        <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i> Teléfono </label>
+                    <div class="input-group">
+
+                        <input type="text" class="form-control" name="telefono" maxlength="256"
+                               onchange="" value="{{ restaurant.phone }}"
+                               onkeyup="" placeholder="Complete el campo">
+                    </div>
+                    <small class="form-text text-muted"></small>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label>
+                        <i class="fab fa-fw fa-whatsapp fa-sm text-muted mr-1"></i>
+                        WhatsApp </label>
+                    <div class="input-group">
+
+                        <input type="text" class="form-control" name="whatsapp" maxlength="256"
+                               onchange="" value="{{ restaurant.whatsapp }}"
+                               onkeyup="" placeholder="Complete el campo">
+                    </div>
+                    <small class="form-text text-muted"></small>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label>
+                        <i class="fa fa-fw fa-address-card fa-sm text-muted mr-1"></i>
+                        Correo </label>
+                    <div class="input-group">
+
+                        <input type="text" class="form-control" name="correo" maxlength="256"
+                               onchange="" value="{{ restaurant.email }}"
+                               onkeyup="" placeholder="Complete el campo">
+                    </div>
+                    <small class="form-text text-muted"></small>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label>
+                        <i class="fa fa-fw fa-clock fa-sm text-muted mr-1"></i>
+                        Tiempo </label>
+                    <div class="input-group">
+
+                        <input type="text" class="form-control" name="tiempo" maxlength="256"
+                               onchange="" value="{{ restaurant.time }}"
+                               onkeyup="" placeholder="Complete el campo">
+                    </div>
+                    <small class="form-text text-muted"></small>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label>
+                        <i class="fab fa-fw fa-facebook fa-sm text-muted mr-1"></i>
+                        Facebook </label>
+                    <div class="input-group">
+
+                        <input type="text" class="form-control" name="facebook" maxlength="256"
+                               onchange="" value="{{ restaurant.facebook }}"
+                               onkeyup="" placeholder="Complete el campo">
+                    </div>
+                    <small class="form-text text-muted"></small>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label>
+                        <i class="fab fa-fw fa-twitter fa-sm text-muted mr-1"></i>
+                        Twitter </label>
+                    <div class="input-group">
+
+                        <input type="text" class="form-control" name="twitter" maxlength="256"
+                               onchange="" value="{{ restaurant.twitter }}"
+                               onkeyup="" placeholder="Complete el campo">
+                    </div>
+                    <small class="form-text text-muted"></small>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label>
+                        <i class="fab fa-fw fa-instagram fa-sm text-muted mr-1"></i>
+                        Instagram </label>
+                    <div class="input-group">
+
+                        <input type="text" class="form-control" name="instagram" maxlength="256"
+                               onchange="" value="{{ restaurant.instagram }}"
+                               onkeyup="" placeholder="Complete el campo">
+                    </div>
+                    <small class="form-text text-muted"></small>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label>
+                        <i class="fa fa-pencil-alt fa-sm mr-1 text-muted"></i>
+                        <!-- <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i> Font Awesome fontawesome.com -->
+                        YouTube </label>
+                    <div class="input-group">
+
+                        <input type="text" class="form-control" name="youtube" maxlength="256"
+                               onchange="" value="{{ restaurant.youtube }}"
+                               onkeyup="" placeholder="Complete el campo">
+                    </div>
+                    <small class="form-text text-muted"></small>
+                </div>
+
+            </div>
+                
+                <div class="text-center mt-4">
+                    <button type="submit" name="submit" class="btn btn-block btn-primary">Guardar
+                    </button>
+                </div>
+            </form>
+
+              </blockquote>
+            </div>
+          </div>
+    </div>
+<script>
+    function cambia (esa) {
+        let loca = document.getElementById('l'+esa.name).innerHTML = esa.value.split('\\')[2]
+    }
+</script>
+{% endblock %}

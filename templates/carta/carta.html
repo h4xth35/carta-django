@@ -1,0 +1,302 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>{{ title }}</title>
+    <!-- Favicons -->
+    <link href="{% static 'assets_menu/img/favicon.png' %}" rel="icon">
+    <link href="{% static 'assets_menu/img/apple-touch-icon.png' %}" rel="apple-touch-icon"><!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,300i,400,400i,600,600i,700,700i|Satisfy|Comic+Neue:300,300i,400,400i,700,700i"
+          rel="stylesheet"><!-- Vendor CSS Files -->
+    <link href="{% static 'assets_menu/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets_menu/vendor/icofont/icofont.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets_menu/vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets_menu/vendor/animate.css/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets_menu/vendor/venobox/venobox.css' %}" rel="stylesheet">
+    <link href="{% static 'assets_menu/vendor/owl.carousel/assets_menu/owl.carousel.min.css' %}" rel="stylesheet">
+    <!-- Template Main CSS File -->
+    <link href="{% static 'assets_menu/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'assets_menu/css/form.css' %}" rel="stylesheet">
+</head>
+
+<body>
+<!-- ======= Top Bar ======= -->
+<section class="d-none d-lg-flex align-items-center fixed-top topbar-transparent" id="topbar">
+    <div class="container text-right">
+        <i><a class="icofont-phone" href="tel:{{ restaurant.phone }}">{{ restaurant.phone }} </a></i>
+        <i class="icofont-clock-time icofont-rotate-180"></i> {{ restaurant.time }}
+    </div>
+</section>
+<!-- ======= END Top Bar ======= -->
+
+<!-- ======= Header ======= -->
+<header class="fixed-top d-flex align-items-center header-transparent" id="header">
+    <div class="container d-flex align-items-center">
+        <div class="logo mr-auto">
+            <h1 class="text-light"><a href="#"><!-- Uncomment below if you prefer to use an image logo -->
+                <a href="#"><img src="{{ restaurant.logo }}" alt="" class="img-fluid"></a>
+        </div>
+
+        <!-- nav-menu -->
+        <nav class="nav-menu d-none d-lg-block">
+            <ul>
+                <li class="active">
+                    <a href="#">Inicio</a>
+                </li>
+                <li>
+                    <a href="#menu">Nuestra Carta</a>
+                </li>
+                <li>
+                    <a href="#contact">Encuentranos</a>
+
+                <li class="book-a-table text-center"><a href="#book-a-table">Reserva WhatsAPP</a></li>
+
+                </li>
+            </ul>
+        </nav>
+        <!-- END nav-menu -->
+    </div>
+</header>
+<!-- End Header -->
+
+<!-- ======= Hero Section ======= -->
+<section id="hero">
+    <div class="hero-container">
+        <div class="carousel slide carousel-fade" data-ride="carousel" id="heroCarousel">
+            <ol class="carousel-indicators" id="hero-carousel-indicators"></ol>
+            <div class="carousel-inner" role="listbox">
+
+                <!-- Sliders  -->
+                {% for banner in banners %}
+                    {% if banner.banner_number == 1 %}
+                        <div class="carousel-item active" style="background-image: url({{ banner.image }})">
+                    {% else %}
+                        <div class="carousel-item" style="background-image: url({{ banner.image }})">
+                    {% endif %}
+
+                    <div class="carousel-container">
+                        <div class="carousel-content">
+                            <h2 class="animated fadeInDown">{{ banner.title }}</h2>
+                            <p class="animated fadeInUp">{{ banner.description }}</p>
+                            <div>
+                                <a class="btn-menu animate__animated animate__fadeInUp scrollto" href="#menu">Nuestra
+                                    Carta</a>
+                                {% if banner.button == "Phone" %}
+                                <a class="btn-menu animate__animated animate__fadeInUp scrollto" href="tel:{{ restaurant.phone }}">Llamanos</a>
+                                {% endif %}
+                                {% if banner.button == "Whatsapp" %}
+                                <a class="btn-menu animate__animated animate__fadeInUp scrollto" href="#book-a-table">Whatsapp</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <!-- End Sliders  -->
+
+
+            </div>
+            <a class="carousel-control-prev" data-slide="prev" href="#heroCarousel" role="button">
+                <span aria-hidden="true" class="carousel-control-prev-icon icofont-simple-left"></span>
+                <span class="sr-only">Previous</span></a>
+            <a class="carousel-control-next" data-slide="next" href="#heroCarousel" role="button">
+                <span aria-hidden="true" class="carousel-control-next-icon icofont-simple-right"></span>
+                <span class="sr-only">Next</span></a>
+        </div>
+    </div>
+</section>
+<!-- End Hero -->
+
+<main id="main">
+
+    <!-- ======= Menu Section ======= -->
+    <section class="menu" id="menu">
+        <div class="container">
+            <div class="section-title">
+                <h2>Nuestra <span>Carta</span></h2>
+                <p>Todos los precios incluyen el IVA vigente.</p>
+                <h6>Consulte productos fuera de carta</h6>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 d-flex justify-content-center">
+                    <ul id="menu-flters">
+                        <li class="filter-active" data-filter="*">Todo</li>
+                        {% for category in categories %}
+                        <li data-filter=".{{ category}}">{{ category}}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="row menu-container">
+                {% for m in menu %}
+                <div class="col-lg-6 menu-item {% for cat in m.category.all %} {{ cat }} {% endfor %}">
+                    <div class="menu-content">
+                        <a>{{ m.name }}</a><span>{{ m.price}}€</span>
+                    </div>
+                    <div class="menu-ingredients">
+                        {{ m.description }}
+                    </div>
+                    <div class="menu-allergens" style="display: flex; justify-content: flex-start; margin-left: : 70px">
+                        {% for a in m.alergenos.all %}
+                            <img src="{{ a.image }}" alt="{{ a.name }}" style="height: 20px; width: 20px; margin-right: 2px;">
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </section>
+    <!-- End Menu Section -->
+
+    <!-- ======= Specials Section ======= -->
+    <section id="specials" class="specials">
+        <div class="container">
+            <div class="section-title">
+                <h2>Lista <span>Alergenos</span></h2>
+                <a href="#alergenos"><img src="{% static 'assets_menu/img/ico/totalaler1.png' %}"></a>
+                <a href="#alergenos"><img src="{% static 'assets_menu/img/ico/totalaler2.png' %}"></a>
+                <p>Le recomenamos que compruebe nuestas lista de alerguenos.</p>
+            </div>
+        </div>
+    </section>
+    <!-- End Specials Section -->
+
+    <!-- ======= Book A Table Section ======= -->
+    <section id="book-a-table" class="book-a-table">
+        <div class="container">
+            <div class="section-title">
+                <h2>Realizar<span> Reserva</span></h2>
+            </div>
+            <form action="" class="formulario">
+                <label for="cliente" class="formulario__label">¿Cuál es tu nombre?</label>
+                <input
+                        id="cliente"
+                        type="text"
+                        class="formulario__input"
+                        placeholder="Indica cuál es tu nombre completo"
+                />
+                <label for="numero" class="formulario__label">¿Cuantos Comensales?</label>
+                <input
+                        id="numero"
+                        type="text"
+                        class="formulario__input"
+                        placeholder="Indica el numero de Comensales"
+                />
+                <label for="fecha" class="formulario__label">Indica la fecha de tu reserva</label>
+                <input
+                        id="fecha"
+                        type="date"
+                        class="formulario__input"
+                        pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
+                />
+
+                <label for="hora" class="formulario__label">Indica la hora de tu reserva</label>
+                <input id="hora" type="time" class="formulario__input"/>
+                <input id="restaurante" hidden value="{{ restaurant.name }}">
+                <input id="whatsapp" hidden value="{{ restaurant.whatsapp }}">
+                <input id="telefono" hidden value="{{ restaurant.phone }}">
+                <div id="respuesta"></div>
+
+                <button id="submit" class="formulario__submit">Enviar a WhatsApp</button>
+            </form>
+            <script src="{% static 'assets_menu/js/form.js' %}"></script>
+        </div>
+    </section>
+    <!-- End Book A Table Section -->
+    <!-- ======= Contact Section ======= -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-title">
+                <h2><span>¿Donde</span> Encontrarnos?</h2>
+            </div>
+        </div>
+        <div class="map">
+            <iframe allowfullscreen frameborder="0"
+                    src="https://www.google.com/maps/embed/v1/place?q={{  restaurant.address }}&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"
+                    style="border:0; width: 100%; height: 350px;"></iframe>
+        </div>
+        <div class="container mt-5">
+            <div class="info-wrap">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 info">
+                        <i class="icofont-google-map"></i>
+                        <h4>Dirección</h4>
+                        <p><a href="https://www.google.com/maps/place/{{ restaurant.address }}" target="_blank" >{{ restaurant.address }} </a></p>
+                    </div>
+                    <div class="col-lg-3 col-md-6 info mt-4 mt-lg-0">
+                        <i class="icofont-clock-time icofont-rotate-90"></i>
+                        <h4>Horarios:</h4>
+                        <p>{{ restaurant.time }}</p>
+                    </div>
+                    <div class="col-lg-3 col-md-6 info mt-4 mt-lg-0">
+                        <i class="icofont-envelope"></i>
+                        <h4>Email:</h4>
+                        <p><a href="mailto:{{ restaurant.email }}">{{ restaurant.email }} </a></p>
+                    </div>
+                    <div class="col-lg-3 col-md-6 info mt-4 mt-lg-0">
+                        <i class="icofont-phone"></i>
+                        <h4>Teléfono:</h4>
+                        <p><a href="tel:{{ restaurant.phone }}">{{ restaurant.phone }} </a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section><!-- End Contact Section -->
+</main><!-- End #main -->
+<!-- ======= Footer ======= -->
+<footer id="footer">
+    <div class="container">
+        <h3>{{ title }}</h3>
+        <p>Puedes seguirnos en nuestras redes sociales para mantenerte informado de nuestros nuevos productos,
+            promociones y descuentos.</p>
+        <div class="social-links">
+            {% if restaurant.facebook %}
+                <a class="facebook" href="{{ restaurant.facebook }}"><i class="bx bxl-facebook"></i></a>
+            {% endif %}
+            {% if restaurant.instagram %}
+                <a class="instagram" href="{{ restaurant.instagram }}"><i class="bx bxl-instagram"></i></a>
+            {% endif %}
+            {% if restaurant.twitter %}
+                <a class="twitter" href="{{ restaurant.twitter }}"><i class="bx bxl-twitter"></i></a>
+            {% endif %}
+            {% if restaurant.youtube %}
+                <a class="youtube" href="{{ restaurant.youtube }}"><i class="bx bxl-youtube"></i></a>
+            {% endif %}
+
+        </div>
+        <div class="copyright">
+            &copy; Copyright <strong><span>{{ title }}</span></strong>. Todos los derechos reservados
+        </div>
+        <div class="credits">
+            Diseño por <a href="https://www.qr-restaurante.net/">QR-Restaurante.net</a>
+        </div>
+    </div>
+</footer><!-- End Footer -->
+<a class="back-to-top"><i class="icofont-simple-up"></i></a> <!-- Vendor jsFiles -->
+
+<script src="{% static 'assets_menu/vendor/jquery/jquery.min.js' %}">
+</script>
+<script src="{% static 'assets_menu/vendor/bootstrap/js/bootstrap.bundle.min.js' %}">
+</script>
+<script src="{% static 'assets_menu/vendor/jquery.easing/jquery.easing.min.js' %}">
+</script>
+<script src="{% static 'assets_menu/vendor/php-email-form/validate.js' %}">
+</script>
+<script src="{% static 'assets_menu/vendor/jquery-sticky/jquery.sticky.js' %}">
+</script>
+<script src="{% static 'assets_menu/vendor/isotope-layout/isotope.pkgd.min.js' %}">
+</script>
+<script src="{% static 'assets_menu/vendor/venobox/venobox.min.js' %}">
+</script>
+<script src="{% static 'assets_menu/vendor/owl.carousel/owl.carousel.min.js' %}">
+</script> <!-- Template Main jsFile -->
+
+<script src="{% static 'assets_menu/js/main.js' %}">
+</script>
+</body>
+</html>

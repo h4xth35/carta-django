@@ -1,0 +1,253 @@
+{% load static %}
+<input type="hidden" name="global_site_url" value="https://127.0.0.1/">
+<input type="hidden" name="global_url" value="https://127.0.0.1/">
+{% csrf_token %}
+<input type="hidden" name="global_number_decimal_point" value=".">
+<input type="hidden" name="global_number_thousands_separator" value=",">
+
+<script src="{% static 'assets/js/popper.min.js' %}"></script>
+<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'assets/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'assets/js/dataTables.bootstrap4.min.js' %}"></script>
+
+<script>
+    /* Some global variables */
+    window.altum = {};
+    let global_token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+    let site_url = document.querySelector('input[name="global_site_url"]').value;
+    let url = document.querySelector('input[name="global_url"]').value;
+    let decimal_point = document.querySelector('[name="global_number_decimal_point"]').value;
+    let thousands_separator = document.querySelector('[name="global_number_thousands_separator"]').value;
+    $(document).ready(function () {
+        $('#tabla').DataTable();
+    });
+</script>
+
+<script src="{% static 'assets/js/main.js' %}"></script>
+<script src="{% static 'assets/js/functions.js' %}"></script>
+<script src="{% static 'assets/js/fontawesome-all.min.js' %}"></script>
+
+
+
+<script>
+    /* On modal show load new data */
+    $('#link_delete').on('show.bs.modal', event => {
+        let link_id = $(event.relatedTarget).data('link-id');
+
+        $(event.currentTarget).find('input[name="link_id"]').val(link_id);
+    });
+
+    $('form[name="link_delete"]').on('submit', event => {
+        let link_id = $(event.currentTarget).find('input[name="link_id"]').val();
+
+        $.ajax({
+            type: 'POST',
+            url: `${url}link-ajax`,
+            data: $(event.currentTarget).serialize(),
+            success: (data) => {
+                let notification_container = event.currentTarget.querySelector('.notification-container');
+                notification_container.innerHTML = '';
+
+                if (data.status == 'error') {
+                    display_notifications(data.message, 'error', notification_container);
+                } else if (data.status == 'success') {
+
+                    /* Clear input values */
+                    $(event.currentTarget).find('input[name="link_id"]').val('');
+
+                    display_notifications(data.message, 'success', notification_container);
+
+                    setTimeout(() => {
+                        /* Hide modal */
+                        $('#link_delete').modal('hide');
+
+                        redirect(data.details.url, true);
+
+                    }, 1000);
+
+                }
+            },
+            dataType: 'json'
+        });
+
+        event.preventDefault();
+    })
+</script>
+<script>
+    $('form[name="create_link"],form[name="create_biolink"]').on('submit', event => {
+
+        $.ajax({
+            type: 'POST',
+            url: `${url}link-ajax`,
+            data: $(event.currentTarget).serialize(),
+            success: (data) => {
+                let notification_container = event.currentTarget.querySelector('.notification-container');
+                notification_container.innerHTML = '';
+
+                if (data.status == 'error') {
+                    display_notifications(data.message, 'error', notification_container);
+                } else if (data.status == 'success') {
+
+                    /* Fade out refresh */
+                    fade_out_redirect({url: data.details.url, full: true});
+
+                }
+            },
+            dataType: 'json'
+        });
+
+        event.preventDefault();
+    })
+</script>
+
+<script src="{% static 'assets/js/clipboard.min.js' %}"></script>
+
+<script>
+    'use strict';
+
+    let clipboard = new ClipboardJS('[data-clipboard-text]');
+
+    /* Copy full url handler */
+    $('[data-clipboard-text]').on('click', event => {
+        let copy = event.currentTarget.dataset.copy;
+        let copied = event.currentTarget.dataset.copied;
+
+        $(event.currentTarget).attr('data-original-title', copied).tooltip('show');
+
+        setTimeout(() => {
+            $(event.currentTarget).attr('data-original-title', copy);
+        }, 500);
+    });
+</script>
+<script src="{% static 'assets/js/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'assets/js/chartjs_defaults.js' %}"></script>
+
+<script>
+    if (document.getElementById('clicks_chart')) {
+        let clicks_chart = document.getElementById('clicks_chart').getContext('2d');
+
+        let gradient = clicks_chart.createLinearGradient(0, 0, 0, 250);
+        gradient.addColorStop(0, 'rgba(56, 178, 172, 0.6)');
+        gradient.addColorStop(1, 'rgba(56, 178, 172, 0.05)');
+
+        let gradient_white = clicks_chart.createLinearGradient(0, 0, 0, 250);
+        gradient_white.addColorStop(0, 'rgba(56,62,178,0.6)');
+        gradient_white.addColorStop(1, 'rgba(56, 62, 178, 0.05)');
+
+        new Chart(clicks_chart, {
+            type: 'line',
+            data: {
+                labels: ["2022-08-04"],
+                datasets: [
+                    {
+                        label: "Pageviews",
+                        data: ["16409"],
+                        backgroundColor: gradient,
+                        borderColor: '#38B2AC',
+                        fill: true
+                    },
+                    {
+                        label: "Visitors",
+                        data: ["16400"],
+                        backgroundColor: gradient_white,
+                        borderColor: '#383eb2',
+                        fill: true
+                    }
+                ]
+            },
+            options: chart_options
+        });
+    }
+</script>
+
+
+<footer class="footer">
+
+    <div class="container d-print-none">
+        <div class="d-flex flex-column flex-lg-row justify-content-between mb-3">
+            <div class="mb-3 mb-lg-0">
+                <a class="h5" href="https://micartafacil.com/">
+                    <span class="mb-2">MiCartaFacil.com</span>
+                </a>
+                <div>Copyright © 2022 MiCartaFacil.com.</div>
+            </div>
+
+            <div class="d-flex flex-column flex-lg-row">
+                <div class="mb-2 ml-lg-3">
+                    <button type="button" id="switch_theme_style" class="btn btn-link text-decoration-none p-0"
+                            data-toggle="tooltip" title="" data-title-theme-style-light="Switch to Light Mode"
+                            data-title-theme-style-dark="Switch to Dark Mode"
+                            data-original-title="Switch to Light Mode">
+                        <span data-theme-style="light" class="d-none"><svg
+                                class="svg-inline--fa fa-sun fa-w-16 fa-fw fa-sm mr-1" aria-hidden="true"
+                                focusable="false" data-prefix="fa" data-icon="sun" role="img"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path
+                                fill="currentColor"
+                                d="M256 160c-52.9 0-96 43.1-96 96s43.1 96 96 96 96-43.1 96-96-43.1-96-96-96zm246.4 80.5l-94.7-47.3 33.5-100.4c4.5-13.6-8.4-26.5-21.9-21.9l-100.4 33.5-47.4-94.8c-6.4-12.8-24.6-12.8-31 0l-47.3 94.7L92.7 70.8c-13.6-4.5-26.5 8.4-21.9 21.9l33.5 100.4-94.7 47.4c-12.8 6.4-12.8 24.6 0 31l94.7 47.3-33.5 100.5c-4.5 13.6 8.4 26.5 21.9 21.9l100.4-33.5 47.3 94.7c6.4 12.8 24.6 12.8 31 0l47.3-94.7 100.4 33.5c13.6 4.5 26.5-8.4 21.9-21.9l-33.5-100.4 94.7-47.3c13-6.5 13-24.7.2-31.1zm-155.9 106c-49.9 49.9-131.1 49.9-181 0-49.9-49.9-49.9-131.1 0-181 49.9-49.9 131.1-49.9 181 0 49.9 49.9 49.9 131.1 0 181z"></path></svg>
+                            <!-- <i class="fa fa-fw fa-sm fa-sun mr-1"></i> Font Awesome fontawesome.com --> Light</span>
+                        <span data-theme-style="dark" class=""><svg
+                                class="svg-inline--fa fa-moon fa-w-16 fa-fw fa-sm mr-1" aria-hidden="true"
+                                focusable="false" data-prefix="fa" data-icon="moon" role="img"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path
+                                fill="currentColor"
+                                d="M283.211 512c78.962 0 151.079-35.925 198.857-94.792 7.068-8.708-.639-21.43-11.562-19.35-124.203 23.654-238.262-71.576-238.262-196.954 0-72.222 38.662-138.635 101.498-174.394 9.686-5.512 7.25-20.197-3.756-22.23A258.156 258.156 0 0 0 283.211 0c-141.309 0-256 114.511-256 256 0 141.309 114.511 256 256 256z"></path></svg>
+                            <!-- <i class="fa fa-fw fa-sm fa-moon mr-1"></i> Font Awesome fontawesome.com --> Dark</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 col-lg mb-3">
+                <ul class="list-style-none d-flex flex-column flex-lg-row flex-wrap m-0">
+
+
+                    <li class="mb-2 mr-lg-3"><a href="https://micartafacil.com" target="_blank">MiCartaFacil.com</a>
+                    </li>
+                    <li class="mb-2 mr-lg-3"><a href="https://creativiza.com" target="_blank">Software by
+                        creativiza.com</a></li>
+                </ul>
+            </div>
+
+
+            <div class="col-12 col-lg-auto">
+                <div class="d-flex flex-wrap">
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    document.querySelector('#switch_theme_style').addEventListener('click', event => {
+        let theme_style = document.querySelector('body[data-theme-style]').getAttribute('data-theme-style');
+        let new_theme_style = theme_style == 'light' ? 'dark' : 'light';
+        /* Set a cookie with the new theme style */
+        set_cookie('theme_style', new_theme_style, 30, "\/");
+
+        /* Change the css and button on the page */
+        let css = document.querySelector(`#css_theme_style`);
+
+        document.querySelector(`body[data-theme-style]`).setAttribute('data-theme-style', new_theme_style);
+
+        switch (new_theme_style) {
+            case 'dark':
+                css.setAttribute('href', "{% static 'assets\/css\/bootstrap-dark.min.css' %}");
+                document.body.classList.add('c_darkmode');
+                break;
+
+            case 'light':
+                css.setAttribute('href', "{% static 'assets\/css\/bootstrap.min.css' %}");
+                document.body.classList.remove('c_darkmode');
+                break;
+        }
+
+        document.querySelector(`#switch_theme_style`).setAttribute('data-original-title', document.querySelector(`#switch_theme_style`).getAttribute(`data-title-theme-style-${theme_style}`));
+        document.querySelector(`#switch_theme_style [data-theme-style="${new_theme_style}"]`).classList.remove('d-none');
+        document.querySelector(`#switch_theme_style [data-theme-style="${theme_style}"]`).classList.add('d-none');
+        $(`#switch_theme_style`).tooltip('hide').tooltip('show');
+
+        event.preventDefault();
+    });
+</script>

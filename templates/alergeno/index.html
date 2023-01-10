@@ -1,0 +1,214 @@
+{% extends 'index.html' %}
+
+{% block title %}
+Alergenos
+{% endblock %}
+
+{% block content %}
+
+<main class="altum-animate altum-animate-fill-none altum-animate-fade-in">
+
+    <div class="container" >
+        <div id="notification"></div>
+        <div class="row mb-4">
+            <div class="col-12 col-lg mb-3 mb-lg-0">
+                <h1 class="h4 m-0">Alergenos</h1>
+            </div>
+
+            <div class="col-12 col-lg-auto d-flex">
+                <div>
+                    <div class="dropdown">
+                        <button type="button" data-toggle="modal" data-target="#create_biolink" data-boundary="viewport"
+                        class="btn btn-primary dropdown-toggle dropdown-toggle-simple">
+
+                            <i class="fa fa-plus-circle"></i>
+                            Crear
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="custom-row mb-4 ">
+               
+        <table id="tabla" class="table table-striped tabla">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Nombre</th>
+                    <th style="text-align: right;">Fecha</th>
+                    <th style="text-align: right;">Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for alergeno in alergenos %}
+                    <tr>
+                        <td>
+                            <span class="fa-stack fa-1x" data-toggle="tooltip" title="">
+                                            
+                            {% if alergeno.favicon == "" %}
+                                <img src="../static/assets/images/right-arrow-7.ico" style="height: 30px; width: 30px" >
+                            {% else %}
+                                <img src="../{{ alergeno.image }}" style="width: 35px" >
+                            {% endif %}
+                                
+                        </span></td>
+                        <td>{{ alergeno.name }}</td>
+                        <td style="text-align: right;">{{ alergeno.updated_at }}</td>
+                        <td style="text-align: right;"><div class="dropdown">
+                            <button type="button" class="btn btn-link text-secondary dropdown-toggle dropdown-toggle-simple"
+                                    data-toggle="dropdown" data-boundary="viewport">
+                                <i class="fa fa-fw fa-ellipsis-v"></i>
+                            </button>
+
+                            <div class="dropdown-menu dropdown-menu-right">
+
+                                <button onclick="editar(`{% url 'actualizar_alergeno' alergeno.id %}`, '{{alergeno.name}}')" class="dropdown-item" data-toggle="modal"
+                                data-target="#editar_alergenos">
+                                    <i class="fa fa-fw fa-sm fa-pencil-alt mr-2"></i>
+                                    Edit</button>
+
+                                <button data-target="Seguro que desea eliminar el alergeno?, recuerde que puede estar siendo usado en algún menú." class="dropdown-item eliminar"
+                                   data-link="{% url 'delete_alergeno' alergeno.id %}">
+                                    <i class="fa fa-trash-alt fa-w-14 fa-fw fa-sm mr-2"></i>
+                                    Delete</button>
+                            </div>
+                        </div></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th></th>
+                    <th>Nombre</th>
+                    <th style="text-align: right;">Fecha</th>
+                    <th style="text-align: right;">Opciones</th>
+                </tr>
+            </tfoot>
+        </table>
+        
+            </div>
+        
+
+    </div>
+
+
+</main>
+
+
+<div class="modal fade" id="create_biolink" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Crear Alergeno</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form name="crear_alergeno" method="post" action="{% url 'alergeno_store' %}" enctype="multipart/form-data" role="form" >
+                    {% csrf_token %}
+                    <input type="hidden" name="request_type" value="create">
+                    <input type="hidden" name="type" value="biolink">
+
+                    <div class="notification-container"></div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i>
+                            Nombre</label>
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" name="nombre" maxlength="256"
+                                   onchange="update_this_value(this, get_slug)" autofocus
+                                   onkeyup="update_this_value(this, get_slug)" placeholder="Complete el campo">
+                        </div>
+                        <small class="form-text text-muted"></small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>
+                            <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i>Icono </label>
+                        <div class="custom-file">
+                            
+                            <input type="file" class="custom-file-input" id="imagen1" name="imagen" onchange="cambia(this)">
+                            <label class="custom-file-label" for="customFileLangHTML" data-browse="Explorar" id="limagen1" >Seleccionar Logo</label>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <button type="submit" name="submit" class="btn btn-block btn-primary">Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editar_alergenos" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Crear Alergeno</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form name="editar_alergeno" method="post" action="" enctype="multipart/form-data" role="form" >
+                    {% csrf_token %}
+                    <input type="hidden" name="request_type" value="create">
+                    <input type="hidden" name="type" value="biolink">
+
+                    <div class="notification-container"></div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i>
+                            Nombre</label>
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" name="nombre" maxlength="256"
+                                   onchange="update_this_value(this, get_slug)" id="edit_nombre"
+                                   onkeyup="update_this_value(this, get_slug)" placeholder="Complete el campo">
+                        </div>
+                        <small class="form-text text-muted"></small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>
+                            <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i>Icono </label>
+                        <div class="custom-file">
+                            
+                            <input type="file" class="custom-file-input" id="imagen2" name="imagen" onchange="cambia(this)">
+                            <label class="custom-file-label" for="customFileLangHTML" data-browse="Explorar" id="limagen2" >Seleccionar Logo</label>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <button type="submit" name="submit" class="btn btn-block btn-primary">Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    function editar(url, name){
+        document.getElementById('edit_nombre').value = name
+        document.forms['editar_alergeno'].action = url
+    }
+    function cambia (esa) {
+        let loca = document.getElementById('l'+esa.id).innerHTML = esa.value.split('\\')[2]
+    }
+</script>
+{% endblock %}

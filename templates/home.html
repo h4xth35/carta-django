@@ -1,0 +1,431 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es-ES">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
+		<title>MiCartaFacil | Solución Online para tu carta o menu | Home Page</title>
+		<meta name="description" content="MiCartaFacil | Solución Online para tu carta o menu, y gestión de redes sociales en restauración">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+		<!-- Remix Icons -->
+		<link rel="stylesheet" type="text/css" href="{% static 'home/css/fonts-remixicon.css' %}">
+
+		<!-- Bootstrap -->
+		<link rel="stylesheet" href="{% static 'assets/css/bootstrap-dark.min.css' %}">
+
+		<!-- Main CSS -->
+		<link rel="stylesheet" href="{% static 'home/css/css-styles.css' %}">
+
+	</head>
+	<body>
+		<!-- Menubar -->
+		<header class="menu-header">
+			<div class="container">
+				<nav class="navbar navbar-dark small navbar-expand-lg">
+					<a class="navbar-brand" href="index.html">MiCartaFácil</a>
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="collapse navbar-collapse" id="navbarSupportedContent">
+						<ul class="navbar-nav ml-auto">
+							<li class="nav-item active">
+								<a class="nav-link link" href="#">Inicio</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link link" href="#desc">¿Como Funciona</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link link" href="#features">¿Que Incluye?</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link link" href="#specs">¿Gratis?</a>
+							</li>
+							
+
+							{% if not user.is_authenticated %}
+								<li class="nav-item ml-sm-2 ">
+									<a href="{% url 'login' %}" class="btn-round nav-link btn btn-dark btn-sm bold mb-5">Registrate Ya <i class="ri-shopping-bag-line ri-center"></i></a>
+								</li>
+							{% else %}            
+								<li class="nav-item ml-sm-2">
+									<a href="{% url 'dashboard' %}" class="btn-round nav-link btn btn-dark btn-sm bold">Dashboard <i class="ri-shopping-bag-line ri-center"></i></a>
+								</li>
+								<li class="nav-item ml-sm-2 dropdown">
+									<a class="btn-round nav-link btn btn-dark btn-sm bold" data-toggle="dropdown" href="#" aria-haspopup="true"
+									aria-expanded="false">
+										<img src="{% static 'favicon.ico' %}"
+											class="navbar-avatar mr-1" width="18px" loading="lazy">
+											
+												Hi {{ user.username }}!<span class="caret"></span>
+											
+									</a>
+									<div class="dropdown-menu dropdown-menu-right">
+
+										<a class="dropdown-item" href="{% url 'categorias' %}">
+											<i class="fa fa-qrcode fa-w-14 fa-fw fa-sm mr-2"></i>
+											Categorías</a>
+
+										<a class="dropdown-item" href="{% url 'alergenos' %}">
+											
+											<i class="fa fa-tools fa-w-14 fa-fw fa-sm mr-2"></i>
+											Alérgenos</a>
+
+										<div class="dropdown-divider"></div>
+
+										<a class="dropdown-item" href="">
+											<i class="fa fa-wrench fa-w-14 fa-fw fa-sm mr-2"></i>
+											Account</a>
+
+
+										<div class="dropdown-divider"></div>
+										<a class="dropdown-item" href="{% url 'logout' %}">
+											<i class="fa fa-sign-out-alt fa-w-16 fa-fw fa-sm mr-2"></i>
+											Logout</a>
+									</div>
+								</li>
+							{% endif %}
+
+						</ul>
+					</div>
+				</nav>
+			</div>
+		</header>
+		<!-- End Menubar -->
+
+		<main>
+
+			<!-- Intro Section -->
+			<section class="intro mt-5 py-5">
+				<div class="container">
+					<div class="row lax" data-lax-translate-y="0 0, 400 100">
+						<div class="col-sm-6 offset-sm-3 text-center">
+							<h1 class="display-1 font-weight-bold">MiCartaFácil</h1>
+							<p class="lead">Crea, Gestiona, Analiza y lleva tu Carta a otro nivel.</p>
+							<a href="" class="btn-link">Ver una demo<i class="ri-play-circle-line ri-lg ri-center"></i></a>
+						</div>
+					</div>
+					<!-- Product Preview Images -->
+					<div class="row mt-5">
+						<div class="col-sm-12 text-center">
+							<div class="product-wrapper">
+								<img src="{% static 'home/images/img-product-600x1200-3.png' %}" class="scroll-move lax" alt="Product Preview" data-lax-translate-x="0 100, 300 200" data-lax-translate-y="400 0, 1200 -100">
+
+								<img src="{% static 'home/images/img-product-600x1200-1.png' %}" class="scroll-stable lax" alt="Product Preview">
+
+								<img src="{% static 'home/images/img-product-600x1200-2.png' %}" class="scroll-move lax" alt="Product Preview" data-lax-translate-x="0 -100, 300 -200" data-lax-translate-y="400 0, 1200 -100">
+							</div>
+						</div>
+					</div>
+					<!-- End Product Preview Images -->
+				</div>
+			</section>
+			<!-- End Intro Section -->
+
+			<!-- Description Section -->
+			<section id="desc" class="desc mt-5 py-5">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-8 offset-sm-2 text-center">
+							<div class="text-muted lax" data-lax-preset="fadeInOut">Utilidad</div>
+							<h2 class="display-4 font-weight-bold mb-3 lax" data-lax-preset="fadeInOut">¿Como Funciona MiCartaFácil?</h2>
+							<p class="lead lax" data-lax-preset="fadeInOut">En MiCartaFácil nos hemos propuesto un reto, llevar al limite la facilidad de gestionar tu propia carta Online, nada de PDF, DOCS o depender de terceras personas, solo tú y la manera más facil de hacerlo.</p>
+						</div>
+					</div>
+					<div class="row mt-5">
+						<div class="col-sm-4 lax" data-lax-preset="fadeOut" data-lax-translate-y="(vh*0.5) 0, (vh) 100" data-lax-anchor="self">
+							<div class="h4">Completamente Adaptativo</div>
+							<p class="font-weight-light text-muted">En MiCartaFácil lo tenemos claro, la mejor manera de vender es que se vea bien, en todos los dipositivos.</p>
+						</div>
+						<div class="col-sm-4 lax" data-lax-preset="fadeOut" data-lax-translate-y="(vh*0.5) 0, (vh) 100" data-lax-anchor="self">
+							<div class="h4">Fácil de Gestionar</div>
+							<p class="font-weight-light text-muted">Trabajamos duro para que tu lo tengas facil en la gestion de tus precios y productos.</p>
+						</div>
+						<div class="col-sm-4 lax" data-lax-preset="fadeOut" data-lax-translate-y="(vh*0.5) 0, (vh) 100" data-lax-anchor="self">
+							<div class="h4">Gestión Redes Sociales</div>
+							<p class="font-weight-light text-muted">Desde tu pagina de inicio puedes añadir, gestionar e incluso programar que te interesa para tu negocio.</p>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- End Description Section -->
+
+			<!-- Features Section -->
+			<section id="features" class="desc mt-5 py-5">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-8 offset-sm-2 text-center">
+							<div class="text-muted lax" data-lax-preset="fadeInOut">El Paquete</div>
+							<h2 class="display-4 font-weight-bold mb-3 lax" data-lax-preset="fadeInOut">¿Que incluye MiCartaFácil?</h2>
+							<p class="lead lax" data-lax-preset="fadeInOut">En MiCartaFácil lo hemos hecho todo pensando en ti, incluso la parte mas laboriosa, tanto es así que ponemos en marcha tu cartas sin coste para ti.</p>
+						</div>
+					</div>
+					<div class="row mt-5 text-center">
+						<!-- Feature Item -->
+						<div class="col-sm-4 lax" data-lax-translate-y="(vh*0.2) 0, (vh) 100" data-lax-anchor="self">
+							<i class="ri-customer-service-line ri-4x color-primary"></i>
+							<div class="h4">Online 24/7</div>
+							<p class="font-weight-light text-muted">Nuestos servidores estan a tu disposición 24/7, sin depender de compatibilidades con los dispositivos.</p>
+						</div>
+						<!-- End Feature Item -->
+
+						<!-- Feature Item -->
+						<div class="col-sm-4">
+							<i class="ri-newspaper-line ri-4x color-primary"></i>
+							<div class="h4">Documentación</div>
+							<p class="font-weight-light text-muted">Dispones de documentación paso a paso, tanto como el apoyo de nuestro equipo para solucionar tus dudas.</p>
+						</div>
+						<!-- End Feature Item -->
+
+						<!-- Feature Item -->
+						<div class="col-sm-4 lax" data-lax-translate-y="(vh*0.2) 0, (vh) 100" data-lax-anchor="self">
+							<i class="ri-stack-line ri-4x color-primary"></i>
+							<div class="h4">Mejoras Continuas</div>
+							<p class="font-weight-light text-muted">Nos gustan los retos, por eso estamos actualizando continumente la plataforma, SIN COSTE para ti.</p>
+						</div>
+						<!-- End Feature Item -->
+					</div>
+					<div class="row mt-5 text-center">
+						<!-- Feature Item -->
+						<div class="col-sm-4 lax" data-lax-translate-y="" data-lax-anchor="self">
+							<i class="ri-heart-2-line ri-4x color-primary"></i>
+							<div class="h4">Redes Sociales</div>
+							<p class="font-weight-light text-muted">Una de las virtudes de MiCartaFacil es la gestión de las redes en tu pagina de Inicio, Descubrelo.</p>
+						</div>
+						<!-- End Feature Item -->
+
+						<!-- Feature Item -->
+						<div class="col-sm-4 lax" data-lax-translate-y="(vh*0.2) 0, (vh) 100" data-lax-anchor="self">
+							<i class="ri-command-line ri-4x color-primary"></i>
+							<div class="h4">Analisis Clientes</div>
+							<p class="font-weight-light text-muted">Los datos son importates, por eso en la plataforma dispones de todos los datos para tu analisis.</p>
+						</div>
+						<!-- End Feature Item -->
+
+						<!-- Feature Item -->
+						<div class="col-sm-4 lax" data-lax-translate-y="" data-lax-anchor="self">
+							<i class="ri-group-line ri-4x color-primary"></i>
+							<div class="h4">Uso Amigable</div>
+							<p class="font-weight-light text-muted">Facil, sencillo y resolutivo, los pilares de MiCartaFacil, asi es nuestra platadorma, sencilla y amigable.</p>
+						</div>
+						<!-- End Feature Item -->
+					</div>
+				</div>
+			</section>
+			<!-- End Features Section -->
+
+			<!-- Info Section -->
+			<section class="info mt-5 py-5">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-6 lax mb-5 mb-sm-0" data-lax-preset="lazy">
+							<div class="text-muted">Porque</div>
+							<h2 class="display-4 font-weight-bold mb-3">¿Porque es mejor MiCartaFácil?</h2>
+							<p class="lead">No exciste en el mercado, soluciones tan potentes, sencillas y utiles, que no supongan un coste elevasimo o incluso crear una web propia, con MiCartaFacil eso no es necesrio, lo tienes todo en el mismo sitio.</p>
+							<a href="" class="btn-round btn btn-warning">Ver la demo <i class="ri-play-line ri-center"></i></a>
+						</div>
+						<div class="col-sm-6 mt-5 mt-sm-0 text-right">
+							<div class="img-wrapper mt-5 mt-sm-0 d-inline-block">
+								<img src="{% static 'home/images/img-product-600x1200-4.png' %}" class="img-fluid max-vh-80 lax" data-lax-translate-x="(vh*0.2) -150, (vh*0.5) -50" data-lax-anchor="self" alt="Product Preview">
+								<img src="{% static 'home/images/img-product-600x1200-5.png' %}" class="img-fluid max-vh-80 absolute lax" data-lax-translate-x="" data-lax-anchor="self" alt="Product Preview">
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- End Info Section -->
+
+			<!-- Info Section -->
+			<section class="info mt-5 py-5">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="img-wrapper">
+								<img src="{% static 'home/images/img-product-600x1200-6.png' %}" class="img-fluid max-vh-80 lax" data-lax-translate-x="(vh*0.2) 150, (vh*0.5) 50" data-lax-anchor="self" alt="Product Preview">
+								<img src="{% static 'home/images/img-product-600x1200-7.png' %}" class="img-fluid max-vh-80 absolute lax" data-lax-translate-x="" data-lax-anchor="self" alt="Product Preview">
+							</div>
+						</div>
+						<div class="col-sm-6 my-5 my-sm-0 text-right lax" data-lax-preset="lazy">
+							<div class="text-muted">Facilidades</div>
+							<h2 class="display-4 font-weight-bold mb-3">¿Que nos diferencia?</h2>
+							<p class="lead">¿Cual seria la mejor solución para gestionar tu carta, en primer lugar nosotros nos encargamos de dar tus articulos de alta y gestionar los arlergenos.</p>
+							<a href="#" class="btn-round btn btn-warning">Estoy interesado<i class="ri-shopping-bag-line ri-center"></i></a>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- End Info Section -->
+
+			<!-- Call to Action Section -->
+			<section class="cta mt-5 py-5">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-8">
+							<div class="text-muted">Registrate Ahora</div>
+							<h2 class="display-4 font-weight-bold mb-3">Nuestra oferta esta liminada a 50 usuarios.</h2>
+							<p class="lead">En MiCartaFácil nos ocupamos de todo, damos de alta los productos, montamos tu pagina biografica, tus redes y todo eso SIN COSTE.</p>
+							<a href="mailto:alta@micartafacil.com" class="btn-round btn btn-danger">Date de Alta Ahora<i class="ri-check-double-line ri-center"></i></a>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- End Call to Action Section -->
+
+			<!-- Specs Section -->
+			<section id="specs" class="specs mt-5 py-5">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-8 offset-sm-2 text-center">
+							<div class="text-muted lax" data-lax-preset="fadeInOut">Registrate Ahora</div>
+							<h2 class="display-4 font-weight-bold mb-3 lax" data-lax-preset="fadeInOut">Consigue 6 meses Gratis </h2>
+							<p class="lead lax" data-lax-preset="fadeInOut">Puedes disfrutar del pack completo Gratis 6 meses y nosotros generamos por ti toda la carta online, ¡0 Preocupaciones!</p>
+						</div>
+					</div>
+					<div class="row mt-5">
+						<div class="col-sm-3 text-right">
+							<div class="info lax" data-lax-translate-x="300 0, 500 -100" data-lax-opacity="300 1, 500 0" data-lax-anchor="self">
+								<div class="text-muted">Actualizado</div>
+								<div class="display-4 font-weight-bold">24/7</div>
+								<p class="font-italic font-weight-light">Manten al dia tu lista de precios actuzalizada</p>
+							</div>
+
+							<div class="info mt-5 lax" data-lax-translate-x="300 0, 500 -100" data-lax-opacity="300 1, 500 0" data-lax-anchor="self">
+								<div class="text-muted">Reputación</div>
+								<div class="display-4 font-weight-bold">15x</div>
+								<p class="font-italic font-weight-light">Nuestros clientes tienen un aumento del 15% en sus redes.</p>
+							</div>
+
+							<div class="info mt-5 lax" data-lax-translate-x="300 0, 500 -100" data-lax-opacity="300 1, 500 0" data-lax-anchor="self">
+								<div class="text-muted">Codigo QR</div>
+								<div class="display-4 font-weight-bold">100%</div>
+								<p class="font-italic font-weight-light">Tu propio codigo QR sin problemas </p>
+							</div>
+						</div>
+						<div class="col-sm-6 mb-sm-large lax" data-lax-preset="lazy">
+							<div class="img-wrapper">
+								<img src="{% static 'home/images/img-usecase-900x465-3.png' %}" class="img-fluid" alt="Product Preview">
+								<img src="{% static 'home/images/img-usecase-900x465-4.png' %}" class="img-fluid absolute lax" data-lax-translate-y="(vh*0.2) 100, (vh*0.5) 0" data-lax-anchor="self" alt="Product Preview">
+							</div>
+						</div>
+						<div class="col-sm-3">
+							<div class="info lax" data-lax-translate-x="300 0, 500 100" data-lax-opacity="300 1, 500 0" data-lax-anchor="self">
+								<div class="text-muted">Sin PDF</div>
+								<div class="display-4 font-weight-bold">Online</div>
+								<p class="font-italic font-weight-light">No más PDF,DOC o archivos que molesten a tus Clientes</p>
+							</div>
+
+							<div class="info mt-5 lax" data-lax-translate-x="300 0, 500 100" data-lax-opacity="300 1, 500 0" data-lax-anchor="self">
+								<div class="text-muted">Alergenos</div>
+								<div class="display-4 font-weight-bold">control</div>
+								<p class="font-italic font-weight-light">Todas nuestra cartes cumple la normativa</p>
+							</div>
+
+							<div class="info mt-5 lax" data-lax-translate-x="300 0, 500 100" data-lax-opacity="300 1, 500 0" data-lax-anchor="self">
+								<div class="text-muted">Tu Nombre</div>
+								<div class="display-4 font-weight-bold">24/7</div>
+								<p class="font-italic font-weight-light">No necesita una web propia usa nuestra plataforma</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- End Specs Section -->
+
+		</main>
+
+		<!-- Footer -->
+		<footer class="pt-5">
+			<div class="container py-5">
+				<div class="row">
+					<div class="col-sm-4">
+						<h4>MiCartaFácil</h4>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-4">
+						<p class="small font-weight-light">Buscamos facilitar ese trabajo extre que supone gestionar los precios de tu carta. No pierdas dinero.</p>
+						<a href="#" class="app-btn btn btn-dark">
+							<i class="ri-android-line ri-lg"></i>
+							<div class="ml-2">
+								<div class="small text-uppercase">100% Compatible</div>
+								<div class="font-weight-bold">Android</div>
+							</div>
+						</a>
+						<a href="#" class="app-btn btn btn-warning">
+							<i class="ri-apple-line ri-lg"></i>
+							<div class="ml-2">
+								<div class="small text-uppercase">100% Compatible</div>
+								<div class="font-weight-bold">Apple IOs</div>
+							</div>
+						</a>
+					</div>
+					<div class="col-sm-2 mt-4 mt-sm-0">
+						<ul class="list-unstyled small">
+							<li><a href="mailto:micartafacil.com">Dame de Alta</a></li>
+							<li><a href="#">Consultas</a></li>
+						</ul>
+					</div>
+					<div class="col-sm-2 mt-4 mt-sm-0">
+						<ul class="list-unstyled small">
+							<li><a href="#">Terminos &amp; Condiciones</a></li>
+							<li><a href="#">Politicas de Privacidad</a></li>
+						</ul>
+					</div>
+					<div class="col-sm-4 mt-4 mt-sm-0">
+						<div class="small">
+							<address class="d-inline-block mb-0">Carrer Truiola, Lloseta, Illes Balears, España</address>
+						</div>
+						<div class="small">
+							<a href="mailto:info@micartafacil.com">info@micartafacil.com/a>
+						</div>
+						<div class="social-media mt-2">
+							<a href="#" target="_blank" class="mr-1">
+								<i class="ri-facebook-line"></i>
+							</a>
+							<a href="#" target="_blank" class="mr-1">
+								<i class="ri-twitter-line"></i>
+							</a>
+							<a href="#" target="_blank" class="mr-1">
+								<i class="ri-instagram-line"></i>
+							</a>
+							<a href="#" target="_blank" class="mr-1">
+								<i class="ri-linkedin-line"></i>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="cp py-4 small">
+				<div class="container">
+					<div class="row text-center text-sm-left">
+						<div class="col-sm-6">
+							Copyright &copy;2022
+						</div>
+						<div class="col-sm-6 text-sm-right mt-2 mt-sm-0">
+							<i class="ri-heart-2-fill primary-color"></i> MiCartaFacil.com
+						</div>
+					</div>
+				</div>
+			</div>
+		</footer>
+		<!-- End Footer -->
+
+		<!-- JQuery -->
+		{% comment %} <script src="{% static 'home/js/7233-js-jquery-3.4.1.min.js' %}"></script> {% endcomment %}
+		<script src="{% static 'assets/js/jquery.min.js' %}"></script>
+		
+		<!-- Custom Cursor Script -->
+		<script src="{% static 'home/js/2199-js-custom-cursor.js' %}"></script>
+
+		<!-- Bootstrap -->
+		{% comment %} <script src="{% static 'home/js/8973-js-bootstrap.min.js' %}"></script> {% endcomment %}
+		<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+
+		<!-- Lax -->
+		<script src="{% static 'home/js/2385-js-lax.js' %}"></script>
+
+		<!-- Main JavaScript -->
+		<script src="{% static 'home/js/7340-js-script.js' %}"></script>
+	</body>
+</html>

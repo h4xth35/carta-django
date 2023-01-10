@@ -1,0 +1,114 @@
+{% extends 'index.html' %}
+
+{% block title %}
+    Actualizar
+{% endblock %}
+
+{% block content %}
+<main class="altum-animate altum-animate-fill-none altum-animate-fade-in">
+
+    <div class="container">
+
+        <div class="row mb-4">
+            <div class="col-12 col-lg mb-3 mb-lg-0">
+                <h1 class="h4 m-0">Editar <i>{{ menu.name }}</i> </h1>
+            </div>
+            <form name="crear_restaurante" method="post" action="{% url 'actualizar_menu' menu.id %}" role="form" >
+                {% csrf_token %}
+            <div class="col-12 col-lg-auto d-flex">
+                <div>
+                    <div class="dropdown">
+                        <button type="submit" data-toggle="modal" data-target="#create_link" data-boundary="viewport"
+                                class="btn btn-primary dropdown-toggle dropdown-toggle-simple">
+  
+                            <i class="fa fa-pencil-alt fa-sm mr-1 text-muted-alt mr-1"></i>
+                            Actualizar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="card">
+            <div class="card-body">
+              <blockquote>
+                    <input type="hidden" name="request_type" value="create">
+                    <input type="hidden" name="type" value="link">
+
+                    <div class="notification-container"></div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="nombre">
+                            <i class="fa fa-fw fa-link fa-sm text-muted mr-1"></i>
+                            Nombre</label>
+                        <input id="nombre" type="text" class="form-control" name="nombre" maxlength="2048"
+                               required="required" placeholder="Complete" value="{{menu.name}}">
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        
+                        <label for="precio">
+                            <i class="fa fa-fw fa-link fa-sm text-muted mr-1"></i>
+                            Precio</label>
+                        <input id="precio" type="number" class="form-control" name="precio" step="0.01"
+                               required="required" placeholder="Complete" value="{{menu.price}}">
+                    </div>
+                </div>
+
+                    <div class="form-group">
+                        <label for="direccion">
+                            <i class="fa fa-fw fa-link fa-sm text-muted mr-1"></i>
+                            Descripción</label>
+                                 <textarea id="direccion" type="text" class="form-control" name="descripcion" maxlength="2048"
+                                 placeholder="Complete">{{menu.description}}</textarea>
+                    </div>
+
+                    
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="location_url">
+                            <i class="fa fa-fw fa-link fa-sm text-muted mr-1"></i>
+                            Categoria </label>
+                               <select name="categoria" id="id_categoria" class="form-control" multiple="">
+                                    {% for x in categoria %}
+                                        {% if x in menu.category.all  %}
+                                            <option value="{{x.id}}" selected>{{x}}</option>
+                                        {% else %}
+                                            <option value="{{x.id}}" >{{x}}</option>
+                                        {% endif %}                                
+                                    {% endfor %}  
+                                </select>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="location_url">
+                            <i class="fa fa-fw fa-link fa-sm text-muted mr-1"></i>
+                            Alergenos</label>
+                               <select name="alergenos" id="id_categoria" class="form-control" multiple="">
+                                {% for x in alergenos %}
+                                    {% if x in menu.alergenos.all  %}
+                                        <option value="{{x.id}}" selected>{{x}}</option>
+                                    {% else %}
+                                        <option value="{{x.id}}" >{{x}}</option>
+                                    {% endif %} 
+                                {% endfor %}  
+                                </select>
+                    </div>
+                </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-block btn-primary">Guardar</button>
+                    </div>
+                </form>
+              </blockquote>
+            </div>
+          </div>
+    </div>
+
+</main>
+<script>
+    function cambia (esa) {
+        let loca = document.getElementById('l'+esa.name).innerHTML = esa.value.split('\\')[2]
+    }
+</script>
+{% endblock %}

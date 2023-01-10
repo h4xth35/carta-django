@@ -1,0 +1,172 @@
+{% load static %}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="w-100 h-100">
+    <head>
+        <title>Login - MiCartaFacil</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+                             
+
+        <link href="{% static 'assets/css/bootstrap-dark.min.css' %}" id="css_theme_style"
+        rel="stylesheet" media="screen,print">
+  <link href="{% static 'assets/css/custom.css' %}" rel="stylesheet"
+        media="screen,print">
+  <link href="{% static 'assets/css/link-custom.css' %}" rel="stylesheet"
+        media="screen,print">
+  <link href="{% static 'assets/css/animate.min.css' %}" rel="stylesheet"
+        media="screen,print">
+  <link href="{% static 'assets/css/sweetalert.css' %}" rel="stylesheet" >
+  <link href="{% static 'assets/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" >
+  
+  <script src="{% static 'assets/js/jquery.min.js' %}"></script>
+  <script src="{% static 'assets/js/sweetalert.js' %}"></script>
+  <script src="{% static 'assets/js/script.js' %}"></script>
+        
+        
+            </head>
+
+    <body class=" basic-wrapper-body " data-theme-style="light">
+                        
+        
+
+        
+        <main class="altum-animate altum-animate-fill-none altum-animate-fade-in py-6">
+            <div class="container mb-5">
+                <div class="d-flex justify-content-center" >
+                    <a href="https://micartafacil.com/" >
+                                                    <h1 style="color: black;">MiCartaFacil</h1>
+                                            </a>
+                </div>
+            </div>
+
+            
+<div class="container">
+    <div class="d-flex flex-column align-items-center">
+        <div class="col-xs-12 col-sm-10 col-md-8 col-lg-5">
+            
+            <div class="card border-0">
+                <div class="card-body p-5">
+                    <h4 class="card-title">{{title}}</h4>
+                    <h2>
+                        
+                    </h2>
+                    <form action="." method="post" class="mt-4" role="form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="email">User Name</label>
+                            {{form.username|add_class:'form-control'|attr:'autocomplete:off'|attr:'placeholder:Ingrese su nombre de usuario'}}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            {{form.password|add_class:'form-control'|attr:'autocomplete:off'|attr:'placeholder:Ingrese su contraseña'}}
+                        </div>
+
+                        
+                        
+                        {% comment %} <div class="custom-control custom-checkbox">
+                            <input type="checkbox" name="rememberme" class="custom-control-input" id="rememberme">
+                            <label class="custom-control-label" for="rememberme"><small class="text-muted">Remember me</small></label>
+                        </div> {% endcomment %}
+
+                        <div class="form-group mt-3">
+                            <button type="submit" name="submit" class="btn btn-primary btn-block my-1">Entrar</button>
+                        </div>
+
+                        
+                        {% comment %} <div class="mt-4 text-center">
+                            <small>
+                                <a href="lost-password" class="text-muted" role="button">Lost Password</a>
+                                                                / <a href="resend-activation" class="text-muted" role="button">Resend Activation</a>
+                                                            </small>
+                        </div> {% endcomment %}
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script>
+            {% if form.errors %}
+                var errors = ''
+                
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        errors += '{{error}}\n'
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    errors += '{{error}}\n'
+                {% endfor %}
+                swal.fire({
+                    title: 'Error!',
+                    text: errors,
+                    icon: 'error'
+                })
+            {% endif %}
+        </script>
+            </div>
+</div>
+        </main>
+
+        
+        
+        
+        <input type="hidden" name="global_site_url" value="https://127.0.0.1/">
+        <input type="hidden" name="global_url" value="https://127.0.0.1/">
+        {% csrf_token %}
+        <input type="hidden" name="global_number_decimal_point" value=".">
+        <input type="hidden" name="global_number_thousands_separator" value=",">
+        
+
+<script>
+    /* Some global variables */
+    window.altum = {};
+    let global_token = document.querySelector('input[name="global_token"]').value;
+    let site_url = document.querySelector('input[name="global_site_url"]').value;
+    let url = document.querySelector('input[name="global_url"]').value;
+    let decimal_point = document.querySelector('[name="global_number_decimal_point"]').value;
+    let thousands_separator = document.querySelector('[name="global_number_thousands_separator"]').value;
+</script>
+
+<script src="{% static 'assets/js/popper.min.js' %}"></script>
+<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'assets/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'assets/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'assets/js/main.js' %}"></script>
+<script src="{% static 'assets/js/functions.js' %}"></script>
+<script src="{% static 'assets/js/fontawesome-all.min.js' %}"></script>
+        <script>
+    document.querySelector('#switch_theme_style').addEventListener('click', event => {
+        let theme_style = document.querySelector('body[data-theme-style]').getAttribute('data-theme-style');
+        let new_theme_style = theme_style == 'light' ? 'dark' : 'light';
+
+        /* Set a cookie with the new theme style */
+        set_cookie('theme_style', new_theme_style, 30, "\/");
+
+        /* Change the css and button on the page */
+        let css = document.querySelector(`#css_theme_style`);
+
+        document.querySelector(`body[data-theme-style]`).setAttribute('data-theme-style', new_theme_style);
+
+        switch(new_theme_style) {
+            case 'dark':
+                css.setAttribute('href', "https:\/\/micartafacil.com\/themes\/altum\/assets\/css\/bootstrap-dark.min.css?v=2210");
+                document.body.classList.add('c_darkmode');
+                break;
+
+            case 'light':
+                css.setAttribute('href', "https:\/\/micartafacil.com\/themes\/altum\/assets\/css\/bootstrap.min.css?v=2210");
+                document.body.classList.remove('c_darkmode');
+                break;
+        }
+
+        document.querySelector(`#switch_theme_style`).setAttribute('data-original-title', document.querySelector(`#switch_theme_style`).getAttribute(`data-title-theme-style-${theme_style}`));
+        document.querySelector(`#switch_theme_style [data-theme-style="${new_theme_style}"]`).classList.remove('d-none');
+        document.querySelector(`#switch_theme_style [data-theme-style="${theme_style}"]`).classList.add('d-none');
+        $(`#switch_theme_style`).tooltip('hide').tooltip('show');
+
+        event.preventDefault();
+    });
+</script>
+    </body>
+</html>

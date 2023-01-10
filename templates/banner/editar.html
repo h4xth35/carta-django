@@ -1,0 +1,133 @@
+{% extends 'index.html' %}
+
+{% block title %}
+    Actualizar
+{% endblock %}
+
+{% block content %}
+<main class="altum-animate altum-animate-fill-none altum-animate-fade-in">
+
+    <div class="container">
+
+        <div class="row mb-4">
+            <div class="col-12 col-lg mb-3 mb-lg-0">
+                <h1 class="h4 m-0">Editar <i>{{ banner.name }}</i> </h1>
+            </div>
+            <form name="crear_restaurante" method="post" action="{% url 'update_banner' banner.id %}" role="form" >
+                {% csrf_token %}
+            <div class="col-12 col-lg-auto d-flex">
+                <div>
+                    <div class="dropdown">
+                        <button type="submit" data-toggle="modal" data-target="#create_link" data-boundary="viewport"
+                                class="btn btn-primary dropdown-toggle dropdown-toggle-simple">
+  
+                            <i class="fa fa-pencil-alt fa-sm mr-1 text-muted-alt mr-1"></i>
+                            Actualizar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="card">
+            <div class="card-body">
+              <blockquote>
+                    <input type="hidden" name="request_type" value="create">
+                    <input type="hidden" name="type" value="link">
+
+                    <div class="notification-container"></div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label>
+                            <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i>
+                            Nombre</label>
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" name="nombre" maxlength="256"
+                                    placeholder="Complete el campo">
+                        </div>
+                        <small class="form-text text-muted"></small>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label>
+                            <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i>
+                            Titulo </label>
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" name="titulo" maxlength="256"
+                                    placeholder="Complete el campo">
+                        </div>
+                        <small class="form-text text-muted"></small>
+                    </div>
+                </div>
+                    <div class="form-group">
+                        <label for="direccion">
+                            <i class="fa fa-fw fa-link fa-sm text-muted mr-1"></i>
+                            Descripción</label>
+                                 <textarea id="direccion" type="text" class="form-control" name="descripcion" maxlength="2048"
+                                 placeholder="Complete"></textarea>
+                    </div>
+                
+                    <div class="mb-3">
+                        <label>
+                            <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i>Imagen </label>
+                        <div class="custom-file">
+                            
+                            <input type="file" class="custom-file-input" id="customFileLangHTML" name="imagen" onchange="cambia(this)">
+                            <label class="custom-file-label" for="customFileLangHTML" data-browse="Explorar" id="limagen">Seleccionar Icono</label>
+                        </div>
+                    </div>
+                <div class="row">
+
+                      <div class="form-group col-6">
+                        <label for="exampleFormControlSelect1"><i class="fa fa-fw fa-address-card fa-sm text-muted mr-1"></i>Botón</label>
+                        <select class="form-control" id="exampleFormControlSelect1" name="boton">
+                          <option value="Whatsapp">Whatsapp</option>
+                          <option value="Phone">Phone</option>
+                        </select>
+                      </div>
+                      <div class="form-group col-6">
+                        <label for="exampleFormControlSelect1"><i class="fa fa-fw fa-address-card fa-sm text-muted mr-1"></i>Orden</label>
+                        <select class="form-control" id="exampleFormControlSelect1" name="orden">
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4 ">4</option>
+
+                        </select>
+                      </div>
+                </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-block btn-primary">Guardar</button>
+                    </div>
+                </form>
+              </blockquote>
+            </div>
+          </div>
+</div>
+<script>
+    function cambia (esa) {
+        let loca = document.getElementById('l'+esa.name).innerHTML = esa.value.split('\\')[2]
+    }
+</script>
+{% endblock %}
+<div class="modal fade" id="create_link" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Crear banner</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,1385 @@
+{% extends 'index.html' %}
+
+{% block title %}
+{{ restaurant.name }}
+{% endblock %}
+
+{% block content %}
+
+        
+        <main class="altum-animate altum-animate-fill-none altum-animate-fade-in">
+            
+<input type="hidden" name="link_base" value="" id="linkbase"/>
+
+<div class="container">
+    
+    <nav aria-label="breadcrumb">
+        <ol class="custom-breadcrumbs small">
+            <li><a href="https://micartafacil.com/es/links">Links</a> <i class="fa fa-fw fa-angle-right"></i></li>
+            <li class="active" aria-current="page">
+                MiCartaFacil Settings            </li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col text-truncate">
+            <h1 id="link_url" class="h3 text-truncate">{{ restaurant.name }}</h1>
+        </div>
+
+        <div class="col-auto">
+            <div class="d-flex align-items-center">
+                {% if restaurant.status == True %}
+                            <div class="custom-control custom-switch" data-toggle="tooltip" title=""
+                                 data-original-title="Change status">
+                                <input type="checkbox" class="custom-control-input" id="{{ restaurant.id }}" data-row-id="{{ restaurant.id }}"
+                                       onchange="ajax_call_helper(event, '/{{ restaurant.id }}/change/', 'GET')" checked="">
+                                <label class="custom-control-label clickable" for="{{ restaurant.id }}"></label>
+                            </div>
+                        {% else %}
+                            <div class="custom-control custom-switch" data-toggle="tooltip" title=""
+                                 data-original-title="Change status">
+                                <input type="checkbox" class="custom-control-input" id="{{ restaurant.id }}" data-row-id="{{ restaurant.id }}"
+                                       onchange="ajax_call_helper(event, '/{{ restaurant.id }}/change/', 'GET')">
+                                <label class="custom-control-label clickable" for="{{ restaurant.id }}"></label>
+                            </div>
+                        {% endif %}
+
+                <button
+                        type="button"
+                        class="btn btn-link text-muted"
+                        data-toggle="tooltip"
+                        title="Copiar al Portapapales"
+                        aria-label="Copiar al Portapapales"
+                        data-copy="Copiar al Portapapales"
+                        data-copied="Copiado!!!"
+                        data-clipboard-text="{{url}}"
+                >
+                    <i class="fa fa-fw fa-sm fa-copy"></i>
+                </button>
+
+                                    {% comment %} <a href="https://micartafacil.com/es/link/29/statistics" class="btn btn-link text-muted" data-toggle="tooltip" title="Statistics"><i class="fa fa-fw fa-sm fa-chart-bar"></i></a> {% endcomment %}
+                
+                
+                <div class="dropdown">
+                    <button type="button" class="btn btn-link text-secondary dropdown-toggle dropdown-toggle-simple" data-toggle="dropdown" data-boundary="viewport">
+                        <i class="fa fa-fw fa-ellipsis-v"></i>
+                    </button>
+
+                    <div class="dropdown-menu dropdown-menu-right">
+                        {% comment %} <a href="https://micartafacil.com/es/link/29" class="dropdown-item"><i class="fa fa-fw fa-sm fa-pencil-alt mr-2"></i> Editar</a> {% endcomment %}
+                        {% comment %} <a href="https://micartafacil.com/es/link/29/statistics" class="dropdown-item"><i class="fa fa-fw fa-sm fa-chart-bar mr-2"></i> Statistics</a>
+                        <a href="https://micartafacil.com/es/qr-code-create?name=123&project_id=&type=url&url=https://micartafacil.com/123" class="dropdown-item" rel="noreferrer"><i class="fa fa-fw fa-sm fa-qrcode mr-2"></i> Código QR</a>
+                        <a href="#" data-toggle="modal" data-target="#link_duplicate_modal" class="dropdown-item" data-link-id="29"><i class="fa fa-fw fa-sm fa-copy mr-2"></i> Duplicar</a> {% endcomment %}
+                        {% comment %} <a href="#" data-toggle="modal" data-target="#link_delete" class="dropdown-item" data-link-id="29"><i class="fa fa-fw fa-sm fa-trash-alt mr-2"></i> Borrar</a> {% endcomment %}
+                        <a href="{% url 'banners' restaurant.id %}"
+                        class="dropdown-item">
+
+                         <i class="fa fa-fw fa-sm fa-camera-retro mr-2"></i>
+                         Banners</a>
+
+                     <button data-target="Seguro que desea eliminar el restaurante?" class="dropdown-item eliminar"
+                        data-link="{% url 'delete_restaurant' restaurant.id %}">
+                         <i class="fa fa-trash-alt fa-w-14 fa-fw fa-sm mr-2"></i>
+                         Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex align-items-baseline mb-4">
+        <span class="mr-1" data-toggle="tooltip" title="Página de MiCartaFacil Links">
+            <i class="fa fa-fw fa-circle fa-sm" style="color: #383eb2"></i>
+        </span>
+
+        <div class="text-muted text-truncate">
+            Tu enlace es <a id="link_full_url" href="{% url 'carta' restaurant.name_url %}" target="_blank" rel="noreferrer">{{url}}</a>        </div>
+    </div>
+
+    
+
+
+
+
+
+<div class="row">
+    <div class="col-12 col-lg-7">
+
+        <div class="d-flex justify-content-between">
+            <ul class="nav nav-pills mb-4" id="pills-tab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="settings-tab" data-toggle="pill" href="#settings" role="tab" aria-controls="settings" aria-selected="true">Settings</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " id="links-tab" data-toggle="pill" href="#biolink_blocks" role="tab" aria-controls="links" aria-selected="false">Menús</a>
+                </li>
+            </ul>
+
+            <div>
+                <button type="button" data-toggle="modal" data-target="#create_link" class="btn btn-primary"><i class="fa fa-fw fa-plus-circle"></i> Añadir Menú</button>
+            </div>
+        </div>
+
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                <div class="card">
+                    <div class="card-body">
+
+                        <form name="crear_restaurante" method="post" action="{% url 'actualizar_restaurant' restaurant.id %}" role="form" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="hidden" name="request_type" value="update" />
+                            <input type="hidden" name="type" value="biolink" />
+                            <input type="hidden" name="link_id" value="29" />
+
+                            <div class="notification-container"></div>
+
+                            <div class="form-group">
+                                <label><i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i> URL corta</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                                                                    <span class="input-group-text">https://micartafacil.com/</span>
+                                                                            </div>
+                                    <input
+                                            type="text"
+                                            class="form-control"
+                                            name="url"
+                                            placeholder="su-alias-personalizado"
+                                            value="{{ restaurant.name_url }}"
+                                            maxlength="256"
+                                            onchange="update_this_value(this, get_slug)"
+                                            onkeyup="update_this_value(this, get_slug)"
+                                                                                                                    />
+                                </div>
+                                <small class="form-text text-muted">Dejar vacío para uno generado al azar.</small>
+                            </div>
+
+                            <button class="btn btn-block btn-gray-200 my-4" type="button" data-toggle="collapse" data-target="#customization_container" aria-expanded="false" aria-controls="customization_container">
+                                <i class="fa fa-fw fa-paint-brush fa-sm mr-1"></i> Personalización                            </button>
+
+                            <div class="collapse" id="customization_container">
+
+                                <div class="container">
+
+                                    <div class="row mb-4">
+                                        <div class="col-12 col-lg mb-3 mb-lg-0">
+                                            <h1 class="h4 m-0">Editar <i>{{ restaurant.name }}</i> </h1>
+                                        </div>
+                                        
+                                        <div class="col-12 col-lg-auto d-flex">
+                                            <div>
+                                                <div class="dropdown">
+                                                    <button type="submit" data-toggle="modal" data-target="#create_link" data-boundary="viewport"
+                                                            class="btn btn-primary dropdown-toggle dropdown-toggle-simple">
+                              
+                                                        <i class="fa fa-pencil-alt fa-sm mr-1 text-muted-alt mr-1"></i>
+                                                        Actualizar
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                            
+                                    </div>
+
+                                        <div class="row">
+                                            <div class="form-group col-md-6">
+                                                <label>
+                                                    <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i>
+                                                    Nombre</label>
+                                                <div class="input-group">
+                            
+                                                    <input type="text" class="form-control" name="nombre" maxlength="256"
+                                                           onchange="" value="{{ restaurant.name }}"
+                                                           onkeyup="" placeholder="Complete el campo">
+                                                </div>
+                                                <small class="form-text text-muted"></small>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label>
+                                                    <i class="fa fa-fw fa-clock fa-sm text-muted mr-1"></i>
+                                                    Tiempo </label>
+                                                <div class="input-group">
+                            
+                                                    <input type="text" class="form-control" name="tiempo" maxlength="256"
+                                                           onchange="" value="{{ restaurant.time }}"
+                                                           onkeyup="" placeholder="Complete el campo">
+                                                </div>
+                                                <small class="form-text text-muted"></small>
+                                            </div>
+                                            <div class="form-group col-md-12">
+                                                <label>
+                                                    <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i>
+                                                    Dirección </label>
+                                                <div class="input-group">
+                            
+                                                    <input type="text" class="form-control" name="direccion" maxlength="256"
+                                                           onchange="" value="{{ restaurant.address }}"
+                                                           onkeyup="" placeholder="Complete el campo">
+                                                </div>
+                                                <small class="form-text text-muted"></small>
+                                            </div>
+                            
+                                            <div class="mb-3 col-md-6">
+                                                <label>
+                                                    <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i> Icono </label>
+                                                <div class="custom-file">
+                                                    
+                                                    <input type="file" class="custom-file-input" id="customFileLangHTML" name="icono" onchange="cambia(this)">
+                                                    <label class="custom-file-label" for="customFileLangHTML" data-browse="Explorar" id="licono">{{ restaurant.favicon }}</label>
+                                                </div>
+                                                <small class="form-text text-muted">Imagen anterior: <a href="../{{ restaurant.favicon }}">{{ restaurant.favicon }}</a></small>
+                                            </div>
+                            
+                                            <div class="mb-3 col-md-6">
+                                                <label>
+                                                     <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i> 
+                                                    
+                                                    Logo </label>
+                                                <div class="custom-file">
+                                                    
+                                                    <input type="file" class="custom-file-input" id="logo" name="logo" onchange="cambia(this)">
+                                                    <label class="custom-file-label" for="customFileLangHTML" data-browse="Explorar" id="llogo" >{{ restaurant.logo }}</label>
+                                                </div>
+                                                <small class="form-text text-muted">Imagen anterior: <a href="../{{ restaurant.logo }}">{{ restaurant.logo }}</a></small>
+                                            </div>
+                                                        
+                                        </div>
+                                                                        
+                                </div>
+
+                            </div>
+
+
+                            <button class="btn btn-block btn-gray-200 my-4" type="button" data-toggle="collapse" data-target="#contacto_container" aria-expanded="false" aria-controls="contacto_container">
+                                <i class="fa fa-fw fa-paint-brush fa-sm mr-1"></i> Contacto                            </button>
+
+                            <div class="collapse" id="contacto_container">
+
+                                <div class="container">
+
+                                    <div class="row mb-4">
+                                        <div class="col-12 col-lg mb-3 mb-lg-0">
+                                            <h1 class="h4 m-0">Editar <i>{{ restaurant.name }}</i> </h1>
+                                        </div>
+                                        
+                                        <div class="col-12 col-lg-auto d-flex">
+                                            <div>
+                                                <div class="dropdown">
+                                                    <button type="submit" data-toggle="modal" data-target="#create_link" data-boundary="viewport"
+                                                            class="btn btn-primary dropdown-toggle dropdown-toggle-simple">
+                              
+                                                        <i class="fa fa-pencil-alt fa-sm mr-1 text-muted-alt mr-1"></i>
+                                                        Actualizar
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                            
+                                    </div>
+
+                                        <div class="row">
+
+                            
+                                            <div class="form-group col-md-6">
+                                                <label>
+                                                    <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i> Teléfono </label>
+                                                <div class="input-group">
+                            
+                                                    <input type="text" class="form-control" name="telefono" maxlength="256"
+                                                           onchange="" value="{{ restaurant.phone }}"
+                                                           onkeyup="" placeholder="Complete el campo">
+                                                </div>
+                                                <small class="form-text text-muted"></small>
+                                            </div>
+                            
+                                            <div class="form-group col-md-6">
+                                                <label>
+                                                    <i class="fab fa-fw fa-whatsapp fa-sm text-muted mr-1"></i>
+                                                    WhatsApp </label>
+                                                <div class="input-group">
+                            
+                                                    <input type="text" class="form-control" name="whatsapp" maxlength="256"
+                                                           onchange="" value="{{ restaurant.whatsapp }}"
+                                                           onkeyup="" placeholder="Complete el campo">
+                                                </div>
+                                                <small class="form-text text-muted"></small>
+                                            </div>
+                            
+                                            <div class="form-group col-md-6">
+                                                <label>
+                                                    <i class="fa fa-fw fa-address-card fa-sm text-muted mr-1"></i>
+                                                    Correo </label>
+                                                <div class="input-group">
+                            
+                                                    <input type="text" class="form-control" name="correo" maxlength="256"
+                                                           onchange="" value="{{ restaurant.email }}"
+                                                           onkeyup="" placeholder="Complete el campo">
+                                                </div>
+                                                <small class="form-text text-muted"></small>
+                                            </div>
+                            
+                                        </div>
+                                                                        
+                                </div>
+
+                            </div>
+
+                            <button class="btn btn-block btn-gray-200 my-4" type="button" data-toggle="collapse" data-target="#redes_container" aria-expanded="false" aria-controls="redes_container">
+                                <i class="fa fa-fw fa-paint-brush fa-sm mr-1"></i> Redes Sociales                            </button>
+
+                            <div class="collapse" id="redes_container">
+
+                                <div class="container">
+
+                                    <div class="row mb-4">
+                                        <div class="col-12 col-lg mb-3 mb-lg-0">
+                                            <h1 class="h4 m-0">Editar <i>{{ restaurant.name }}</i> </h1>
+                                        </div>
+                                        
+                                        <div class="col-12 col-lg-auto d-flex">
+                                            <div>
+                                                <div class="dropdown">
+                                                    <button type="submit" data-toggle="modal" data-target="#create_link" data-boundary="viewport"
+                                                            class="btn btn-primary dropdown-toggle dropdown-toggle-simple">
+                              
+                                                        <i class="fa fa-pencil-alt fa-sm mr-1 text-muted-alt mr-1"></i>
+                                                        Actualizar
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                            
+                                    </div>
+
+                                        <div class="row">
+                            
+                                            <div class="form-group col-md-6">
+                                                <label>
+                                                    <i class="fab fa-fw fa-facebook fa-sm text-muted mr-1"></i>
+                                                    Facebook </label>
+                                                <div class="input-group">
+                            
+                                                    <input type="text" class="form-control" name="facebook" maxlength="256"
+                                                           onchange="" value="{{ restaurant.facebook }}"
+                                                           onkeyup="" placeholder="Complete el campo">
+                                                </div>
+                                                <small class="form-text text-muted"></small>
+                                            </div>
+                            
+                                            <div class="form-group col-md-6">
+                                                <label>
+                                                    <i class="fab fa-fw fa-twitter fa-sm text-muted mr-1"></i>
+                                                    Twitter </label>
+                                                <div class="input-group">
+                            
+                                                    <input type="text" class="form-control" name="twitter" maxlength="256"
+                                                           onchange="" value="{{ restaurant.twitter }}"
+                                                           onkeyup="" placeholder="Complete el campo">
+                                                </div>
+                                                <small class="form-text text-muted"></small>
+                                            </div>
+                            
+                                            <div class="form-group col-md-6">
+                                                <label>
+                                                    <i class="fab fa-fw fa-instagram fa-sm text-muted mr-1"></i>
+                                                    Instagram </label>
+                                                <div class="input-group">
+                            
+                                                    <input type="text" class="form-control" name="instagram" maxlength="256"
+                                                           onchange="" value="{{ restaurant.instagram }}"
+                                                           onkeyup="" placeholder="Complete el campo">
+                                                </div>
+                                                <small class="form-text text-muted"></small>
+                                            </div>
+                            
+                                            <div class="form-group col-md-6">
+                                                <label>
+                                                    <i class="fa fa-pencil-alt fa-sm mr-1 text-muted"></i>
+                                                    <!-- <i class="fa fa-fw fa-anchor fa-sm text-muted mr-1"></i> Font Awesome fontawesome.com -->
+                                                    YouTube </label>
+                                                <div class="input-group">
+                            
+                                                    <input type="text" class="form-control" name="youtube" maxlength="256"
+                                                           onchange="" value="{{ restaurant.youtube }}"
+                                                           onkeyup="" placeholder="Complete el campo">
+                                                </div>
+                                                <small class="form-text text-muted"></small>
+                                            </div>
+                            
+                                        </div>
+                                                                        
+                                </div>
+
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <button type="submit" name="submit" class="btn btn-block btn-primary">Actualizar</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade " id="biolink_blocks" role="tabpanel" aria-labelledby="links-tab">
+
+                {% for item in menu %}        
+                        <div class="biolink_block card  mb-4" data-biolink-block-id="50">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="custom-row-side-controller">
+                                        <span data-toggle="tooltip" title="Arrastra y suelta para reordenar">
+                                            <i class="fa fa-fw fa-bars text-muted custom-row-side-controller-grab drag"></i>
+                                        </span>
+                                    </div>
+
+                                    <div class="col-1 mr-2 p-0 d-none d-lg-block">
+                                        <span class="fa-stack fa-1x" data-toggle="tooltip" title="Enlace">
+                                            <i class="fa fa-circle fa-stack-2x" style="color: #00526b"></i>
+                                            <i class="fas fa fa-fw fa-link fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </div>
+
+                                    <div class="col-6 col-md-5">
+                                        <div class="d-flex flex-column">
+                                            <a href="#"
+                                               data-toggle="collapse"
+                                               data-target="#biolink_block_expanded_content_{{item.id}}"
+                                               aria-expanded="false"
+                                               aria-controls="biolink_block_expanded_content_{{item.id}}"
+                                            >
+                                                <strong>{{ item.name }}</strong>
+                                            </a>
+
+                                            <span class="d-flex align-items-center">
+                                                                                                                                                <img src="https://external-content.duckduckgo.com/ip3/test.com.ico" class="img-fluid icon-favicon mr-1" />
+                                                
+                                                <span class="d-inline-block text-truncate">
+                                                    <span data-toggle="tooltip" title="Precio" class="badge badge-light"> {{ item.price }}</span>
+                                                </span>
+                                                                                        </span>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="d-none d-md-flex col-md-3">
+                                        {% for alergeno in item.alergenos.all %}
+                                                <img src="../{{ alergeno.image }} " style="height: 20px; width: 20px; margin-right: 2px;" data-toggle="tooltip" title="" data-original-title="{{ alergeno.name }}">
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="col-2 col-md d-flex justify-content-end">
+                                        {% for category in item.category.all %}
+                                            <span class="badge badge-danger">{{ category.name }}</span>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="col-3 col-md d-flex justify-content-end">
+                                        <div class="dropdown">
+                                            <button type="button" class="btn btn-link text-secondary dropdown-toggle dropdown-toggle-simple" data-toggle="dropdown" data-boundary="viewport">
+                                                <i class="fa fa-fw fa-ellipsis-v"></i>
+                                            </button>
+
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a href="#"
+                                               data-toggle="collapse"
+                                               data-target="#biolink_block_expanded_content_{{item.id}}"
+                                               aria-expanded="false"
+                                               aria-controls="biolink_block_expanded_content_{{item.id}}"
+                                               class="dropdown-item">
+                                                    <i class="fa fa-fw fa-sm fa-pencil-alt mr-2"></i>
+                                                    Edit</a>
+                
+                                                <button data-toggle="" data-target="Seguro que desea eliminar el menu" class="dropdown-item eliminar"
+                                                    data-link="{% url 'delete_menus' item.id %}">
+                                                    <i class="fa fa-trash-alt fa-w-14 fa-fw fa-sm mr-2"></i>
+                                                    Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="collapse mt-3" id="biolink_block_expanded_content_{{item.id}}" data-link-type="link">
+                                    
+                                    <div class="container">
+                                            <form name="crear_restaurante" method="post" action="{% url 'actualizar_menu' item.id %}" role="form" >
+                                                {% csrf_token %}
+
+
+                                                        <input type="hidden" name="request_type" value="create">
+                                                        <input type="hidden" name="type" value="link">
+                                    
+                                                        <div class="notification-container"></div>
+                                                    <div class="row">
+                                                        <div class="form-group col-md-6">
+                                                            <label for="nombre">
+                                                                <i class="fa fa-fw fa-link fa-sm text-muted mr-1"></i>
+                                                                Nombre</label>
+                                                            <input id="nombre" type="text" class="form-control" name="nombre" maxlength="2048"
+                                                                required="required" placeholder="Complete" value="{{item.name}}">
+                                                        </div>
+                                    
+                                                        <div class="form-group col-md-6">
+                                                            
+                                                            <label for="precio">
+                                                                <i class="fa fa-fw fa-link fa-sm text-muted mr-1"></i>
+                                                                Precio</label>
+                                                            <input id="precio" type="number" class="form-control" name="precio" step="0.01"
+                                                                required="required" placeholder="Complete" value="{{item.price}}">
+                                                        </div>
+                                                    </div>
+                                    
+                                                        <div class="form-group">
+                                                            <label for="direccion">
+                                                                <i class="fa fa-fw fa-link fa-sm text-muted mr-1"></i>
+                                                                Descripción</label>
+                                                                    <textarea id="direccion" type="text" class="form-control" name="descripcion" maxlength="2048"
+                                                                    placeholder="Complete">{{item.description}}</textarea>
+                                                        </div>
+                                    
+                                                        
+                                                    <div class="row">
+                                                        <div class="form-group col-md-6">
+                                                            <label for="location_url">
+                                                                <i class="fa fa-fw fa-link fa-sm text-muted mr-1"></i>
+                                                                Categoria </label>
+                                                                <select name="categoria" id="id_categoria" class="form-control" multiple="">
+                                                                        {% for x in categoria %}
+                                                                            {% if x in item.category.all  %}
+                                                                                <option value="{{x.id}}" selected>{{x}}</option>
+                                                                            {% else %}
+                                                                                <option value="{{x.id}}" >{{x}}</option>
+                                                                            {% endif %}                                
+                                                                        {% endfor %}  
+                                                                    </select>
+                                                        </div>
+                                    
+                                                        <div class="form-group col-md-6">
+                                                            <label for="location_url">
+                                                                <i class="fa fa-fw fa-link fa-sm text-muted mr-1"></i>
+                                                                Alergenos</label>
+                                                                <select name="alergenos" id="id_categoria" class="form-control" multiple="">
+                                                                    {% for x in alergenos %}
+                                                                        {% if x in item.alergenos.all  %}
+                                                                            <option value="{{x.id}}" selected>{{x}}</option>
+                                                                        {% else %}
+                                                                            <option value="{{x.id}}" >{{x}}</option>
+                                                                        {% endif %} 
+                                                                    {% endfor %}  
+                                                                    </select>
+                                                        </div>
+                                                    </div>
+                                    
+                                                        <div class="text-center mt-4">
+                                                            <button type="submit" class="btn btn-block btn-primary">Guardar</button>
+                                                        </div>
+                                            </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    
+                        
+                                    
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-5 mt-5 mt-lg-0 d-flex justify-content-end">
+        <div class="biolink-preview-container">
+            <div class="biolink-preview">
+                <div class="biolink-preview-iframe-container">
+                    <iframe id="biolink_preview_iframe" class="biolink-preview-iframe" src=""></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</div>
+
+</main>
+
+<div class="modal fade" id="create_biolink_link" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" data-toggle="modal" data-target="#biolink_link_create_modal" data-dismiss="modal" class="btn btn-sm btn-link"><i class="fa fa-fw fa-chevron-circle-left text-muted"></i></button>
+                <h5 class="modal-title">Añadir un botón de enlace</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form name="create_biolink_link" method="post" role="form">
+                    <input type="hidden" name="token" value="ef346fef2fc0ceb384612cecd71eb9a0" required="required" />
+                    <input type="hidden" name="request_type" value="create" />
+                    <input type="hidden" name="link_id" value="29" />
+                    <input type="hidden" name="block_type" value="link" />
+
+                    <div class="notification-container"></div>
+
+                    <div class="form-group">
+                        <label for="link_location_url"><i class="fa fa-fw fa-link fa-sm text-muted mr-1"></i> URL de destino</label>
+                        <input id="link_location_url" type="text" class="form-control" name="location_url" required="required" maxlength="2048" placeholder="https://example.com/url-larga-ejemplo" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="link_name"><i class="fa fa-fw fa-signature fa-sm text-muted mr-1"></i> Nombre</label>
+                        <input id="link_name" type="text" name="name" maxlength="128" class="form-control" required="required" />
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" name="submit" class="btn btn-block btn-primary">Enviar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="create_biolink_heading" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" data-toggle="modal" data-target="#biolink_link_create_modal" data-dismiss="modal" class="btn btn-sm btn-link"><i class="fa fa-fw fa-chevron-circle-left text-muted"></i></button>
+                <h5 class="modal-title">Agregar un encabezado</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form name="create_biolink_text" method="post" role="form">
+                    <input type="hidden" name="token" value="ef346fef2fc0ceb384612cecd71eb9a0" required="required" />
+                    <input type="hidden" name="request_type" value="create" />
+                    <input type="hidden" name="link_id" value="29" />
+                    <input type="hidden" name="block_type" value="heading" />
+
+                    <div class="notification-container"></div>
+
+                    <div class="form-group">
+                        <label for="heading_heading_type"><i class="fa fa-fw fa-heading fa-sm text-muted mr-1"></i> Tipo</label>
+                        <select id="heading_heading_type" name="heading_type" class="form-control">
+                            <option value="h1">H1</option>
+                            <option value="h2">H2</option>
+                            <option value="h3">H3</option>
+                            <option value="h4">H4</option>
+                            <option value="h5">H5</option>
+                            <option value="h6">H6</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="heading_text"><i class="fa fa-fw fa-signature fa-sm text-muted mr-1"></i> Texto</label>
+                        <input id="heading_text" type="text" class="form-control" name="text" maxlength="256" />
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" name="submit" class="btn btn-block btn-primary">Enviar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="create_biolink_paragraph" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" data-toggle="modal" data-target="#biolink_link_create_modal" data-dismiss="modal" class="btn btn-sm btn-link"><i class="fa fa-fw fa-chevron-circle-left text-muted"></i></button>
+                <h5 class="modal-title">Añadir un párrafo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form name="create_biolink_text" method="post" role="form">
+                    <input type="hidden" name="token" value="ef346fef2fc0ceb384612cecd71eb9a0" required="required" />
+                    <input type="hidden" name="request_type" value="create" />
+                    <input type="hidden" name="link_id" value="29" />
+                    <input type="hidden" name="block_type" value="paragraph" />
+
+                    <div class="notification-container"></div>
+
+                    <div class="form-group">
+                        <label for="paragraph_text"><i class="fa fa-fw fa-paragraph fa-sm text-muted mr-1"></i> Texto</label>
+                        <textarea id="paragraph_text" class="form-control" name="text" maxlength="2048"></textarea>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" name="submit" class="btn btn-block btn-primary">Enviar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="create_biolink_avatar" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" data-toggle="modal" data-target="#biolink_link_create_modal" data-dismiss="modal" class="btn btn-sm btn-link"><i class="fa fa-fw fa-chevron-circle-left text-muted"></i></button>
+                <h5 class="modal-title">Añadir Avatar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form name="create_biolink_avatar" method="post" role="form" enctype="multipart/form-data">
+                    <input type="hidden" name="token" value="ef346fef2fc0ceb384612cecd71eb9a0" required="required" />
+                    <input type="hidden" name="request_type" value="create" />
+                    <input type="hidden" name="link_id" value="29" />
+                    <input type="hidden" name="block_type" value="avatar" />
+
+                    <div class="notification-container"></div>
+
+                    <div class="form-group">
+                        <label for="avatar_image"><i class="fa fa-fw fa-image fa-sm text-muted mr-1"></i> Imagen</label>
+                        <input id="avatar_image" type="file" name="image" accept=".gif, .png, .jpg, .jpeg, .svg" class="form-control-file" required="required" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="avatar_size"><i class="fa fa-fw fa-expand fa-sm text-muted mr-1"></i> Tamaño</label>
+                        <select id="avatar_size" name="size" class="form-control">
+                            <option value="75">75x75px</option>
+                            <option value="100">100x100px</option>
+                            <option value="125">125x125px</option>
+                            <option value="150">150x150px</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="avatar_border_radius"><i class="fa fa-fw fa-border-all fa-sm text-muted mr-1"></i> Radio del borde</label>
+                        <select id="avatar_border_radius" name="border_radius" class="form-control">
+                            <option value="straight">Recto</option>
+                            <option value="round">Redondo</option>
+                            <option value="rounded">Redondeado</option>
+                        </select>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" name="submit" class="btn btn-block btn-primary">Enviar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="create_biolink_image" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" data-toggle="modal" data-target="#biolink_link_create_modal" data-dismiss="modal" class="btn btn-sm btn-link"><i class="fa fa-fw fa-chevron-circle-left text-muted"></i></button>
+                <h5 class="modal-title">Añadir Imagen</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form name="create_biolink_image" method="post" role="form" enctype="multipart/form-data">
+                    <input type="hidden" name="token" value="ef346fef2fc0ceb384612cecd71eb9a0" required="required" />
+                    <input type="hidden" name="request_type" value="create" />
+                    <input type="hidden" name="link_id" value="29" />
+                    <input type="hidden" name="block_type" value="image" />
+
+                    <div class="notification-container"></div>
+
+                    <div class="form-group">
+                        <label for="image_image"><i class="fa fa-fw fa-image fa-sm text-muted mr-1"></i> Imagen</label>
+                        <input id="image_image" type="file" name="image" accept=".gif, .png, .jpg, .jpeg, .svg" class="form-control-file" required="required" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="image_image_alt"><i class="fa fa-fw fa-comment-dots fa-sm text-muted mr-1"></i> Imagen alternativa</label>
+                        <input id="image_image_alt" type="text" class="form-control" name="image_alt" value="" maxlength="100" />
+                        <small class="form-text text-muted">Descripción de la imagen para fines de accesibilidad y SEO.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="image_location_url"><i class="fa fa-fw fa-link fa-sm text-muted mr-1"></i> URL de destino</label>
+                        <input id="image_location_url" type="text" class="form-control" name="location_url" maxlength="2048" />
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" name="submit" class="btn btn-block btn-primary">Enviar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="create_biolink_socials" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" data-toggle="modal" data-target="#biolink_link_create_modal" data-dismiss="modal" class="btn btn-sm btn-link"><i class="fa fa-fw fa-chevron-circle-left text-muted"></i></button>
+                <h5 class="modal-title">Agregar enlaces rede sociales</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form name="create_biolink_socials" method="post" role="form" enctype="multipart/form-data">
+                    <input type="hidden" name="token" value="ef346fef2fc0ceb384612cecd71eb9a0" required="required" />
+                    <input type="hidden" name="request_type" value="create" />
+                    <input type="hidden" name="link_id" value="29" />
+                    <input type="hidden" name="block_type" value="socials" />
+
+                    <div class="notification-container"></div>
+
+                    <div class="form-group">
+                        <label for="socials_color"><i class="fa fa-fw fa-paint-brush fa-sm text-muted mr-1"></i> Color </label>
+                        <input type="color" id="socials_color" name="color" class="form-control" value="" required="required" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="socials_size"><i class="fa fa-fw fa-expand-alt fa-sm text-muted mr-1"></i> Tamaño</label>
+                        <select id="socials_size" name="size" class="form-control">
+                            <option value="s">Pequeño</option>
+                            <option value="m">Medio</option>
+                            <option value="l">Grande</option>
+                            <option value="xl">Extra Grande</option>
+                        </select>
+                    </div>
+
+                                                                                            <div class="form-group">
+                                <label for="socials_email"><i class="fa fa-envelope fa-fw fa-sm text-muted mr-1"></i> Email</label>
+                                <input id="socials_email" type="text" class="form-control" name="socials[email]" placeholder="email@domain.com" value="" maxlength="320" />
+                            </div>
+                                                                                                <div class="form-group">
+                                <label for="socials_tel"><i class="fa fa-phone-square-alt fa-fw fa-sm text-muted mr-1"></i> Telefono</label>
+                                <input id="socials_tel" type="text" class="form-control" name="socials[tel]" placeholder="+00000000000" value="" maxlength="32" />
+                            </div>
+                                                                                                <div class="form-group">
+                                <label for="socials_telegram"><i class="fab fa-telegram fa-fw fa-sm text-muted mr-1"></i> Telegram</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">https://t.me/</span>
+                                    </div>
+                                    <input id="socials_telegram" type="text" class="form-control" name="socials[telegram]" placeholder="telegram-username" value="" maxlength="128" />
+                                </div>
+                            </div>
+                                                                                                <div class="form-group">
+                                <label for="socials_whatsapp"><i class="fab fa-whatsapp fa-fw fa-sm text-muted mr-1"></i> Whatsapp</label>
+                                <input id="socials_whatsapp" type="text" class="form-control" name="socials[whatsapp]" placeholder="+00000000000" value="" maxlength="32" />
+                            </div>
+                                                                                                <div class="form-group">
+                                <label for="socials_facebook"><i class="fab fa-facebook fa-fw fa-sm text-muted mr-1"></i> Facebook</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">https://facebook.com/</span>
+                                    </div>
+                                    <input id="socials_facebook" type="text" class="form-control" name="socials[facebook]" placeholder="facebook-page" value="" maxlength="128" />
+                                </div>
+                            </div>
+                                                                                                <div class="form-group">
+                                <label for="socials_facebook-messenger"><i class="fab fa-facebook-messenger fa-fw fa-sm text-muted mr-1"></i> Facebook Messenger</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">https://m.me/</span>
+                                    </div>
+                                    <input id="socials_facebook-messenger" type="text" class="form-control" name="socials[facebook-messenger]" placeholder="facebook-page" value="" maxlength="128" />
+                                </div>
+                            </div>
+                                                                                                <div class="form-group">
+                                <label for="socials_instagram"><i class="fab fa-instagram fa-fw fa-sm text-muted mr-1"></i> Instagram</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">https://instagram.com/</span>
+                                    </div>
+                                    <input id="socials_instagram" type="text" class="form-control" name="socials[instagram]" placeholder="Instagram username" value="" maxlength="128" />
+                                </div>
+                            </div>
+                                                                                                <div class="form-group">
+                                <label for="socials_twitter"><i class="fab fa-twitter fa-fw fa-sm text-muted mr-1"></i> Twitter</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">https://twitter.com/</span>
+                                    </div>
+                                    <input id="socials_twitter" type="text" class="form-control" name="socials[twitter]" placeholder="Twitter username" value="" maxlength="128" />
+                                </div>
+                            </div>
+                                                                                                <div class="form-group">
+                                <label for="socials_tiktok"><i class="fab fa-tiktok fa-fw fa-sm text-muted mr-1"></i> TikTok</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">https://tiktok.com/@</span>
+                                    </div>
+                                    <input id="socials_tiktok" type="text" class="form-control" name="socials[tiktok]" placeholder="TikTok username" value="" maxlength="128" />
+                                </div>
+                            </div>
+                                                                                                <div class="form-group">
+                                <label for="socials_youtube"><i class="fab fa-youtube fa-fw fa-sm text-muted mr-1"></i> YouTube Channel</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">https://youtube.com/channel/</span>
+                                    </div>
+                                    <input id="socials_youtube" type="text" class="form-control" name="socials[youtube]" placeholder="Channel ID" value="" maxlength="128" />
+                                </div>
+                            </div>
+                                                                                                <div class="form-group">
+                                <label for="socials_soundcloud"><i class="fab fa-soundcloud fa-fw fa-sm text-muted mr-1"></i> SoundCloud</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">https://soundcloud.com/</span>
+                                    </div>
+                                    <input id="socials_soundcloud" type="text" class="form-control" name="socials[soundcloud]" placeholder="SoundCloud username" value="" maxlength="128" />
+                                </div>
+                            </div>
+                                                                                                <div class="form-group">
+                                <label for="socials_linkedin"><i class="fab fa-linkedin fa-fw fa-sm text-muted mr-1"></i> LinkedIn</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">https://linkedin.com/</span>
+                                    </div>
+                                    <input id="socials_linkedin" type="text" class="form-control" name="socials[linkedin]" placeholder="Linked In Profile" value="" maxlength="128" />
+                                </div>
+                            </div>
+                                                                                                <div class="form-group">
+                                <label for="socials_spotify"><i class="fab fa-spotify fa-fw fa-sm text-muted mr-1"></i> Spotify</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">https://open.spotify.com/artist/</span>
+                                    </div>
+                                    <input id="socials_spotify" type="text" class="form-control" name="socials[spotify]" placeholder="Spotify username" value="" maxlength="128" />
+                                </div>
+                            </div>
+                                                                                                <div class="form-group">
+                                <label for="socials_pinterest"><i class="fab fa-pinterest fa-fw fa-sm text-muted mr-1"></i> Pinterest</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">https://pinterest.com/</span>
+                                    </div>
+                                    <input id="socials_pinterest" type="text" class="form-control" name="socials[pinterest]" placeholder="Pinterest username" value="" maxlength="128" />
+                                </div>
+                            </div>
+                                                                                                <div class="form-group">
+                                <label for="socials_snapchat"><i class="fab fa-snapchat fa-fw fa-sm text-muted mr-1"></i> Snapchat</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">https://snapchat.com/add/</span>
+                                    </div>
+                                    <input id="socials_snapchat" type="text" class="form-control" name="socials[snapchat]" placeholder="Snapchat username" value="" maxlength="128" />
+                                </div>
+                            </div>
+                                                                                                <div class="form-group">
+                                <label for="socials_twitch"><i class="fab fa-twitch fa-fw fa-sm text-muted mr-1"></i> Twitch</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">https://twitch.tv/</span>
+                                    </div>
+                                    <input id="socials_twitch" type="text" class="form-control" name="socials[twitch]" placeholder="Twitch username" value="" maxlength="128" />
+                                </div>
+                            </div>
+                                                                                                <div class="form-group">
+                                <label for="socials_discord"><i class="fab fa-discord fa-fw fa-sm text-muted mr-1"></i> Discord</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">https://discord.gg/</span>
+                                    </div>
+                                    <input id="socials_discord" type="text" class="form-control" name="socials[discord]" placeholder="Discord username" value="" maxlength="128" />
+                                </div>
+                            </div>
+                                            
+                    <div class="text-center mt-4">
+                        <button type="submit" name="submit" class="btn btn-block btn-primary">Enviar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="create_biolink_mail" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" data-toggle="modal" data-target="#biolink_link_create_modal" data-dismiss="modal" class="btn btn-sm btn-link"><i class="fa fa-fw fa-chevron-circle-left text-muted"></i></button>
+                <h5 class="modal-title">Agregar un formulario de registro</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <p class="text-muted modal-subheader">Capture registros de correo electrónico con facilidad.</p>
+
+            <div class="modal-body">
+                <form name="create_biolink_mail" method="post" role="form">
+                    <input type="hidden" name="token" value="ef346fef2fc0ceb384612cecd71eb9a0" required="required" />
+                    <input type="hidden" name="request_type" value="create" />
+                    <input type="hidden" name="link_id" value="29" />
+                    <input type="hidden" name="block_type" value="mail" />
+
+                    <div class="notification-container"></div>
+
+                    <div class="form-group">
+                        <label for="mail_name"><i class="fa fa-fw fa-signature fa-sm text-muted mr-1"></i> Nombre</label>
+                        <input id="mail_name" type="text" name="name" maxlength="128" class="form-control" required="required" />
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" name="submit" class="btn btn-block btn-primary">Enviar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="create_biolink_soundcloud" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" data-toggle="modal" data-target="#biolink_link_create_modal" data-dismiss="modal" class="btn btn-sm btn-link"><i class="fa fa-fw fa-chevron-circle-left text-muted"></i></button>
+                <h5 class="modal-title">Añadir una canción de Soundcloud</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <p class="text-muted modal-subheader">Pegue su URL de Soundcloud y la mostraremos como una canción reproducible en su perfil.</p>
+
+            <div class="modal-body">
+                <form name="create_biolink_soundcloud" method="post" role="form">
+                    <input type="hidden" name="token" value="ef346fef2fc0ceb384612cecd71eb9a0" required="required" />
+                    <input type="hidden" name="request_type" value="create" />
+                    <input type="hidden" name="link_id" value="29" />
+                    <input type="hidden" name="block_type" value="soundcloud" />
+
+                    <div class="notification-container"></div>
+
+                    <div class="form-group">
+                        <label for="soundcloud_location_url"><i class="fa fa-fw fa-link fa-sm text-muted mr-1"></i> Soundcloud URL</label>
+                        <input id="soundcloud_location_url" type="text" class="form-control" name="location_url" required="required" maxlength="2048" placeholder="https://soundcloud.com/octobersveryown/dupppoi" />
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" name="submit" class="btn btn-block btn-primary">Enviar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="create_biolink_spotify" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" data-toggle="modal" data-target="#biolink_link_create_modal" data-dismiss="modal" class="btn btn-sm btn-link"><i class="fa fa-fw fa-chevron-circle-left text-muted"></i></button>
+                <h5 class="modal-title">Agregar una canción / álbum de Spotify</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <p class="text-muted modal-subheader">Pegue la URL de su canción, álbum, programa o episodio de Spotify y lo mostraremos como reproductor en su perfil.</p>
+
+            <div class="modal-body">
+                <form name="create_biolink_spotify" method="post" role="form">
+                    <input type="hidden" name="token" value="ef346fef2fc0ceb384612cecd71eb9a0" required="required" />
+                    <input type="hidden" name="request_type" value="create" />
+                    <input type="hidden" name="link_id" value="29" />
+                    <input type="hidden" name="block_type" value="spotify" />
+
+                    <div class="notification-container"></div>
+
+                    <div class="form-group">
+                        <label for="spotify_location_url"><i class="fa fa-fw fa-link fa-sm text-muted mr-1"></i> Spotify URL</label>
+                        <input id="spotify_location_url" type="text" class="form-control" name="location_url" required="required" maxlength="2048" placeholder="https://open.spotify.com/track/5ry2OE6R2zKIUoIHBoi" />
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" name="submit" class="btn btn-block btn-primary">Enviar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="create_biolink_youtube" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" data-toggle="modal" data-target="#biolink_link_create_modal" data-dismiss="modal" class="btn btn-sm btn-link"><i class="fa fa-fw fa-chevron-circle-left text-muted"></i></button>
+                <h5 class="modal-title">Añadir video de Youtube</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <p class="text-muted modal-subheader">Pegue la URL de su video de YouTube y lo mostraremos como un video en su perfil.</p>
+
+            <div class="modal-body">
+                <form name="create_biolink_youtube" method="post" role="form">
+                    <input type="hidden" name="token" value="ef346fef2fc0ceb384612cecd71eb9a0" required="required" />
+                    <input type="hidden" name="request_type" value="create" />
+                    <input type="hidden" name="link_id" value="29" />
+                    <input type="hidden" name="block_type" value="youtube" />
+
+                    <div class="notification-container"></div>
+
+                    <div class="form-group">
+                        <label for="youtube_location_url"><i class="fa fa-fw fa-link fa-sm text-muted mr-1"></i> YouTube Video URL</label>
+                        <input id="youtube_location_url" type="text" class="form-control" name="location_url" required="required" maxlength="2048" placeholder="https://www.youtube.com/watch?v=2a8PgqWrc_4" />
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" name="submit" class="btn btn-block btn-primary">Enviar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="create_biolink_twitch" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" data-toggle="modal" data-target="#biolink_link_create_modal" data-dismiss="modal" class="btn btn-sm btn-link"><i class="fa fa-fw fa-chevron-circle-left text-muted"></i></button>
+                <h5 class="modal-title">Agregar un video de Twitch</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <p class="text-muted modal-subheader">Pegue su URL de Twitch y la mostraremos como un video en su perfil.</p>
+
+            <div class="modal-body">
+                <form name="create_biolink_twitch" method="post" role="form">
+                    <input type="hidden" name="token" value="ef346fef2fc0ceb384612cecd71eb9a0" required="required" />
+                    <input type="hidden" name="request_type" value="create" />
+                    <input type="hidden" name="link_id" value="29" />
+                    <input type="hidden" name="block_type" value="twitch" />
+
+                    <div class="notification-container"></div>
+
+                    <div class="form-group">
+                        <label for="twitch_location_url"><i class="fa fa-fw fa-link fa-sm text-muted mr-1"></i> Twitch URL</label>
+                        <input id="twitch_location_url" type="text" class="form-control" name="location_url" required="required" maxlength="2048" placeholder="https://www.twitch.tv/xxxxxx" />
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" name="submit" class="btn btn-block btn-primary">Enviar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="create_biolink_vimeo" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" data-toggle="modal" data-target="#biolink_link_create_modal" data-dismiss="modal" class="btn btn-sm btn-link"><i class="fa fa-fw fa-chevron-circle-left text-muted"></i></button>
+                <h5 class="modal-title">Agregar un video de Vimeo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <p class="text-muted modal-subheader">Agregar un video de Vimeo</p>
+
+            <div class="modal-body">
+                <form name="create_biolink_vimeo" method="post" role="form">
+                    <input type="hidden" name="token" value="ef346fef2fc0ceb384612cecd71eb9a0" required="required" />
+                    <input type="hidden" name="request_type" value="create" />
+                    <input type="hidden" name="link_id" value="29" />
+                    <input type="hidden" name="block_type" value="vimeo" />
+
+                    <div class="notification-container"></div>
+
+                    <div class="form-group">
+                        <label for="vimeo_location_url"><i class="fa fa-fw fa-link fa-sm text-muted mr-1"></i> Vimeo URL</label>
+                        <input id="vimeo_location_url" type="text" class="form-control" name="location_url" required="required" maxlength="2048" placeholder="https://vimeo.com/00000000" />
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" name="submit" class="btn btn-block btn-primary">Enviar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="link_duplicate_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <div class="d-flex justify-content-between mb-3">
+                    <h5 class="modal-title">
+                        <i class="fa fa-fw fa-sm fa-copy text-muted mr-2"></i>
+                        Duplicado                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <p class="text-muted">Duplique fácilmente este recurso con un clic de un botón.</p>
+
+                <form name="link_duplicate_modal" method="post" action="https://micartafacil.com/es/link-ajax/duplicate" role="form">
+                    <input type="hidden" name="token" value="ef346fef2fc0ceb384612cecd71eb9a0" required="required" />
+                    <input type="hidden" name="link_id" value="" />
+
+                    <div class="mt-4">
+                        <button type="submit" name="submit" class="btn btn-block btn-primary">Enviar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="biolink_block_duplicate_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <div class="d-flex justify-content-between mb-3">
+                    <h5 class="modal-title">
+                        <i class="fa fa-fw fa-sm fa-copy text-muted mr-2"></i>
+                        Duplicado                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <p class="text-muted">Duplique fácilmente este recurso con un clic de un botón.</p>
+
+                <form name="biolink_block_duplicate_modal" method="post" action="https://micartafacil.com/es/biolink-block-ajax/duplicate" role="form">
+                    <input type="hidden" name="token" value="ef346fef2fc0ceb384612cecd71eb9a0" required="required" />
+                    <input type="hidden" name="biolink_block_id" value="" />
+
+                    <div class="mt-4">
+                        <button type="submit" name="submit" class="btn btn-block btn-primary">Enviar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="create_link" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Crear Menu</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form name="" method="post" role="form" action="{% url 'new_res' %}" >
+                    {% csrf_token %}
+                    <input type="hidden" name="request_type" value="create">
+                    <input type="hidden" name="type" value="link">
+
+                    <div class="notification-container"></div>
+
+                    <div class="form-group">
+                        <label for="nombre">
+                            <i class="fa fa-fw fa-link fa-sm text-muted mr-1"></i>
+                            Nombre</label>
+                        <input id="nombre" type="text" class="form-control" name="nombre" maxlength="2048"
+                               required="required" placeholder="Complete">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="direccion">
+                            <i class="fa fa-fw fa-link fa-sm text-muted mr-1"></i>
+                            Descripción</label>
+                                 <textarea id="direccion" type="text" class="form-control" name="descripcion" maxlength="2048"
+                                 placeholder="Complete"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="precio">
+                            <i class="fa fa-fw fa-link fa-sm text-muted mr-1"></i>
+                            Precio</label>
+                        <input id="precio" type="number" class="form-control" name="precio" step="0.01"
+                               required="required" placeholder="Complete">
+                    </div>
+                    <div class="form-group">
+                        <label for="location_url">
+                            <i class="fa fa-fw fa-link fa-sm text-muted mr-1"></i>
+                            Categoria</label>
+                               <select name="categoria" id="id_categoria" class="form-control" multiple>
+                                    {% for x in categoria %}
+                                        <option value="{{x.id}}">{{x}}</option>
+                                    {% endfor %}  
+                                </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location_url">
+                            <i class="fa fa-fw fa-link fa-sm text-muted mr-1"></i>
+                            Alergenos</label>
+                               <select name="alergeno" id="id_categoria" class="form-control" multiple="">
+                                {% for x in alergenos %}
+                                    <option value="{{x.id}}">{{x}}</option>
+                                {% endfor %}  
+                                </select>
+                    </div>
+                    <input type="hidden" value="{{restaurant.id}}" name="restaurante">
+
+                    <div class="text-center mt-4">
+                        <button type="submit" name="submit" class="btn btn-block btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    const base = location.protocol + '//' + location.host;
+    document.getElementById('linkbase').value = base;
+    function cambia (esa) {
+        let loca = document.getElementById('l'+esa.name).innerHTML = esa.value.split('\\')[2]
+    }
+</script>
+{% endblock %}
